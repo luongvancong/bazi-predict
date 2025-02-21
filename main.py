@@ -1,6 +1,8 @@
 # -*- encoding: utf-8 -*-
 
 from gan import GAN
+from zhi_util import check_zhi_interaction_priority, get_interaction
+from util import group_pairs, get_gan_from_bazi, get_zhi_from_bazi, group_three, zhi_group_pairs, get_all_zhi_interaction
 
 def predict_bazi(bazi: list, thai_nguyen: list, menh_cung: list, than_cung: list, guest_column: list):
     yearGan = bazi[0]
@@ -26,12 +28,35 @@ def get_thap_than(host_can: str, guest_can: str):
     return None
     
 
-bazi = ["Canh", "Ngọ", "Bính", "Tuất", "Nhâm", "Tuất", "Đinh", "Mùi"]
+bazi = {
+    "year": ("Canh", "Ngọ"),
+    "month": ("Bính", "Tuất"),
+    "day": ("Nhâm", "Tuất"),
+    "hour": ("Đinh", "Mùi")
+}
+
 thai_nguyen = ["Đinh", "Sửu"]
 menh_cung = ["Mậu", "Tý"]
 than_cung = ["Nhâm", "Ngọ"]
 guest_column = ["Canh", "Dần"]
 
-print(get_thap_than("Giáp", "Nhâm"))
+# print(get_thap_than("Giáp", "Nhâm"))
 
-predict_bazi(bazi, thai_nguyen, menh_cung, than_cung, guest_column);
+# print(get_interaction("Tý", ["Thìn", "Mão"]))
+
+# predict_bazi(bazi, thai_nguyen, menh_cung, than_cung, guest_column);
+
+
+# print(group_pairs(get_zhi_from_bazi(bazi)))
+# print(group_three(get_zhi_from_bazi(bazi)))
+
+print('---------------------------------------')
+# pairs = group_pairs(bazi)
+# for pair in pairs:
+#     interaction = get_interaction("Tý", list(pair))
+#     if (len(interaction) > 0):
+#         print(interaction)
+get_all_zhi_interaction(bazi)
+
+
+# print(check_zhi_interaction_priority(["Thân", "Tị"]))

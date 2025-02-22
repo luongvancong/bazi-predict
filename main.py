@@ -1,8 +1,9 @@
 # -*- encoding: utf-8 -*-
 
+from career import career_predict_by_guest
 from gan import GAN
 from zhi_util import check_zhi_interaction_priority, get_interaction
-from util import group_pairs, get_gan_from_bazi, get_zhi_from_bazi, group_three, zhi_group_pairs, get_all_zhi_interaction
+from util import find_gan_interaction, find_thap_than, get_hidden_gans, group_pairs, get_gan_from_bazi, get_zhi_from_bazi, group_three, zhi_group_pairs, get_all_zhi_interaction
 
 def predict_bazi(bazi: list, thai_nguyen: list, menh_cung: list, than_cung: list, guest_column: list):
     yearGan = bazi[0]
@@ -29,8 +30,8 @@ def get_thap_than(host_can: str, guest_can: str):
     
 
 bazi = {
-    "year": ("Canh", "Ngọ"),
-    "month": ("Bính", "Tuất"),
+    "year": ("Mậu", "Ngọ"),
+    "month": ("Mậu", "Tuất"),
     "day": ("Nhâm", "Tuất"),
     "hour": ("Đinh", "Mùi")
 }
@@ -59,4 +60,14 @@ print('---------------------------------------')
 get_all_zhi_interaction(bazi)
 
 
-# print(check_zhi_interaction_priority(["Thân", "Tị"]))
+# print(check_zhi_interaction_priority(["Thân", "Tị"])
+
+print(find_thap_than("Kỷ", "Canh"))
+
+guest = ("Giáp", "Sửu")
+print(career_predict_by_guest(bazi, guest))
+
+
+print('---------START HIDDEN GAN---------')
+print(get_hidden_gans("Tý"))
+print('---------END HIDDEN GAN-----------')

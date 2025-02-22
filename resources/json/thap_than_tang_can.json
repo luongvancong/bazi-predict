@@ -1,0 +1,122 @@
+{
+    "Giáp": {
+        "Quan": "Sửu, Dậu, Tuất",
+        "Sát": "Tị, Thân",
+        "Ấn": "Tý, Sửu, Thìn",
+        "Kiêu": "Thân, Hợi",
+        "Tài": "Sửu, Ngọ, Mùi",
+        "Thiên Tài": "Dần, Thìn, Tị, Thân, Tuất",
+        "Thực Thần": "Dần, Tị",
+        "Thương Quan": "Ngọ, Mùi, Tuất",
+        "Tỷ Kiên": "Dần, Hợi",
+        "Kiếp Tài": "Mão, Thìn, Mùi"
+    },
+    "Ất": {
+        "Quan": "Tị, Thân",
+        "Sát": "Dậu, Sửu, Tuất",
+        "Ấn": "Thân, Hợi",
+        "Kiêu": "Tý, Sửu, Thìn",
+        "Tài": "Dần, Thìn, Tị, Thân, Tuất",
+        "Thiên Tài": "Sửu, Ngọ, Mùi",
+        "Thực Thần": "Ngọ, Mùi, Tuất",
+        "Thương Quan": "Dần, Tị",
+        "Tỷ Kiên": "Mão, Thìn, Mùi",
+        "Kiếp Tài": "Dần, Hợi"
+    },
+    "Bính": {
+        "Quan": "Tý, Sửu, Thìn",
+        "Sát": "Thân, Hợi",
+        "Ấn": "Mão, Thìn, Mùi",
+        "Kiêu": "Dần, Hợi",
+        "Tài": "Sửu, Dậu, Tuất",
+        "Thiên Tài": "Tị, Thân",
+        "Thực Thần": "Dần, Thìn, Tị, Thân, Tuất",
+        "Thương Quan": "Sửu, Ngọ, Mùi",
+        "Tỷ Kiên": "Dần, Tị",
+        "Kiếp Tài": "Ngọ, Mùi, Tuất"
+    },
+    "Đinh": {
+        "Quan": "Thân, Hợi",
+        "Sát": "Tý, Sửu, Thìn",
+        "Ấn": "Dần, Hợi",
+        "Kiêu": "Mão, Thìn, Mùi",
+        "Tài": "Tị, Thân",
+        "Thiên Tài": "Sửu, Dậu, Tuất",
+        "Thực Thần": "Sửu, Ngọ, Mùi",
+        "Thương Quan": "Dần, Thìn, Tị, Thân, Tuất",
+        "Tỷ Kiên": "Ngọ, Mùi, Tuất",
+        "Kiếp Tài": "Dần, Tị"
+    },
+    "Mậu": {
+        "Quan": "Mão, Thìn, Mùi",
+        "Sát": "Dần, Hợi",
+        "Ấn": "Ngọ, Mùi, Tuất",
+        "Kiêu": "Dần, Tị",
+        "Tài": "Tý, Sửu, Thìn",
+        "Thiên Tài": "Thân, Hợi",
+        "Thực Thần": "Tị, Thân",
+        "Thương Quan": "Sửu, Dậu, Tuất",
+        "Tỷ Kiên": "Dần, Thìn, Tị, Thân, Tuất",
+        "Kiếp Tài": "Sửu, Ngọ, Mùi"
+    },
+    "Kỷ": {
+        "Quan": "Dần, Hợi",
+        "Sát": "Mão, Thìn, Mùi",
+        "Ấn": "Dần, Tị",
+        "Kiêu": "Ngọ, Mùi, Tuất",
+        "Tài": "Thân, Hợi",
+        "Thiên Tài": "Tý, Sửu, Thìn",
+        "Thực Thần": "Sửu, Dậu, Tuất",
+        "Thương Quan": "Tị, Thân",
+        "Tỷ Kiên": "Sửu, Ngọ, Mùi",
+        "Kiếp Tài": "Dần, Thìn, Tị, Thân, Tuất"
+    },
+    "Canh": {
+        "Quan": "Ngọ, Mùi, Tuất",
+        "Sát": "Dần, Tị",
+        "Ấn": "Sửu, Ngọ, Mùi",
+        "Kiêu": "Dần, Thìn, Tị, Thân, Tuất",
+        "Tài": "Mão, Thìn, Mùi",
+        "Thiên Tài": "Dần, Hợi",
+        "Thực Thần": "Thân, Hợi",
+        "Thương Quan": "Tý, Sửu, Thìn",
+        "Tỷ Kiên": "Tị, Thân",
+        "Kiếp Tài": "Sửu, Dậu, Tuất"
+    },
+    "Tân": {
+        "Quan": "Dần, Tị",
+        "Sát": "Ngọ, Mùi, Tuất",
+        "Ấn": "Dần, Thìn, Tị, Thân, Tuất",
+        "Kiêu": "Sửu, Ngọ, Mùi",
+        "Tài": "Dần, Hợi",
+        "Thiên Tài": "Mão, Thìn, Mùi",
+        "Thực Thần": "Tý, Sửu, Thìn",
+        "Thương Quan": "Thân, Hợi",
+        "Tỷ Kiên": "Sửu, Dậu, Tuất",
+        "Kiếp Tài": "Tị, Thân"
+    },
+    "Nhâm": {
+        "Quan": "Sửu, Ngọ, Mùi",
+        "Sát": "Dần, Thìn, Tị, Thân, Tuất",
+        "Ấn": "Sửu, Dậu, Tuất",
+        "Kiêu": "Tị, Thân",
+        "Tài": "Ngọ, Mùi, Tuất",
+        "Thiên Tài": "Dần, Tị",
+        "Thực Thần": "Dần, Hợi",
+        "Thương Quan": "Mão, Thìn, Mùi",
+        "Tỷ Kiên": "Thân, Hợi",
+        "Kiếp Tài": "Tý, Sửu, Thìn"
+    },
+    "Quý": {
+        "Quan": "Dần, Thìn, Tị, Thân, Tuất",
+        "Sát": "Sửu, Ngọ, Mùi",
+        "Ấn": "Tị, Thân",
+        "Kiêu": "Sửu, Dậu, Tuất",
+        "Tài": "Dần, Tị",
+        "Thiên Tài": "Ngọ, Mùi, Tuất",
+        "Thực Thần": "Mão, Thìn, Mùi",
+        "Thương Quan": "Dần, Hợi",
+        "Tỷ Kiên": "Tý, Sửu, Thìn",
+        "Kiếp Tài": "Thân, Hợi"
+    }
+}

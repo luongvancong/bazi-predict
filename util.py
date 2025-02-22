@@ -1,5 +1,7 @@
 from itertools import combinations
 
+from config.zhi import ZHI
+from gan import GAN
 from zhi_util import check_zhi_interaction_priority
 
 def get_gan_from_bazi(bazi: list):
@@ -69,3 +71,21 @@ def get_all_zhi_interaction(bazi):
             })
         
     return result
+
+def find_thap_than(guest_can, host_can):
+    ten_gods = GAN[host_can]["ten_gods"]
+    for thap_than, can in ten_gods.items():
+        if can == guest_can:
+            return thap_than
+    
+    return None
+
+def find_gan_interaction(guest_can, host_can):
+    interactions = GAN[guest_can]["interactions"]
+    for interaction, gan in interactions.items():
+        if host_can == gan:
+            return interaction
+    return None
+
+def get_hidden_gans(zhi):
+    return ZHI[zhi]["hidden_gans"]

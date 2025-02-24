@@ -21,7 +21,7 @@ CAREER_PREDICTION = [
 ]
 
 
-def career_predict_by_guest(bazi, guest: tuple):
+def career_predict_by_guest(bazi: dict, guest: tuple):
     guest_can = guest[0]
     guest_chi = guest[1]
 
@@ -82,7 +82,7 @@ def career_predict_by_guest(bazi, guest: tuple):
             if column == 'month':
                 predict.append('Trụ tháng có Ấn tinh gặp khắc, công việc dễ gặp xung đột, mâu thuẫn.')
             else:
-                predict.append('Tài khắc Ấn, công việc dễ gặp sai sót, mất tập trung')
+                predict.append('Tài khắc Ấn, công việc dễ gặp sai sót, mất tập trung.')
 
         if guest_thap_than == 'Chính Quan' and column == 'day' and interaction == 'Tương hợp':
             predict.append('Chính Quan đến hợp với nhật chủ, công việc gặp được thuận lợi, hợp tác vui vẻ, cấp trên quý mến, ủng hộ.')
@@ -91,14 +91,13 @@ def career_predict_by_guest(bazi, guest: tuple):
             predict.append('Thất Sát đến tương khắc với nhật chủ, công việc dễ gặp xung đột, mâu thuẫn, cần phải lưu ý.')
 
         if ((guest_thap_than in ('Thất Sát', 'Chính Quan') and column_can_thap_than in ('Chính Ấn', 'Thiên Ấn'))
-                or {'Thất Sát', 'Chính Quan'} & set(guest_hidden_thap_than) and {'Chính Ấn', 'Thiên Ấn'} & set(column_hidden_thap_than)):
-            if (guest_thap_than == 'Thất Sát' and column_can_thap_than in ('Chính Ấn', 'Thiên Ấn')) or (
-                    'Thất Sát' in guest_hidden_thap_than and {'Chính Ấn', 'Thiên Ấn'} & set(column_hidden_thap_than)):
+                or (guest_hidden_thap_than[0] in {'Thất Sát', 'Chính Quan'} and column_hidden_thap_than[0] in {'Chính Ấn', 'Thiên Ấn'})):
+            if (guest_thap_than == 'Thất Sát' and column_can_thap_than in ('Chính Ấn', 'Thiên Ấn')) or ('Thất Sát' == guest_hidden_thap_than[0] and column_hidden_thap_than in ('Chính Ấn', 'Thiên Ấn')):
                 if "Tương hình" in check_zhi_interaction_priority((guest_chi, chi)):
                     predict.append('Tương đối thuận lợi, có Sát Ấn tương sinh, tuy có áp lực nhưng cơ hội phát triển là không tệ. Do có tương hình, vẫn nên cẩn thận với các vấn đề thị phi, xung đột.')
                 else:
                     predict.append('Tương đối thuận lợi, có Sát Ấn tương sinh, tuy có áp lực nhưng cơ hội phát triển là không tệ.')
-            elif ((guest_thap_than == 'Chính Quan' and column_can_thap_than in ('Chính Ấn', 'Thiên Ấn')) or ('Chính Quan' in guest_hidden_thap_than and {'Chính Ấn', 'Thiên Ấn'} & set(column_hidden_thap_than)))\
+            elif ((guest_thap_than == 'Chính Quan' and column_can_thap_than in ('Chính Ấn', 'Thiên Ấn')) or ('Chính Quan' == guest_hidden_thap_than[0] and column_hidden_thap_than[0] in {'Chính Ấn', 'Thiên Ấn'}))\
                     and len(check_zhi_interaction_priority((guest_chi, chi))) > 0:
                 if "Tương hình" in check_zhi_interaction_priority((guest_chi, chi)):
                     predict.append('Tương đối thuận lợi, có Quan Ấn tương sinh, dễ đạt được công danh và cơ hội thăng tiến. Do có tương hình, vẫn nên cẩn thận với các vấn đề thị phi, xung đột.')
@@ -110,7 +109,7 @@ def career_predict_by_guest(bazi, guest: tuple):
                     predict.append(f'Tương đối thuận lợi, có Quan Ấn tương sinh, dễ đạt được công danh và cơ hội thăng tiến.')
 
         if {guest_thap_than, column_can_thap_than} == {'Thất Sát', 'Chính Quan'}:
-            if 'Thương Quan' in guest_hidden_thap_than:
+            if 'Thương Quan' == guest_hidden_thap_than[0]:
                 predict.append('Quan Sát thấu can lại tạp loạn, gặp cách cục Thương Quan khắc Quan lưu ý chuyện thị phi, tranh đấu tại công sở.')
             else:
                 predict.append('Quan Sát thấu can lại tạp loạn, công việc dễ gặp xung đột, mâu thuẫn, cần phải lưu ý.')
@@ -118,12 +117,16 @@ def career_predict_by_guest(bazi, guest: tuple):
         if ({'Chính Tài', 'Thiên Tài'} & set(guest_hidden_thap_than)
             and {'Chính Ấn', 'Thiên Ấn'} & set(column_hidden_thap_than)) and (
                 guest_chi, chi) in TWO_ZHI_HIDDEN_COMBINATION:
-            predict.append('Tài tinh Ám hợp Ấn tinh, công việc dễ gặp sai sót, nhầm lẫn với số liệu, con số, hoặc tài chính, cũng rất dễ mất tập trung')
+            predict.append('Tài tinh Ám hợp Ấn tinh, công việc dễ gặp sai sót, nhầm lẫn với số liệu, con số, hoặc tài chính, cũng rất dễ mất tập trung.')
 
-        if ({'Chính Ấn', 'Thiên Ấn'} & set(column_hidden_thap_than)
-            and {'Thiên Tài', 'Chính Tài'} & set(
-                    guest_hidden_thap_than)) and "Tương khắc" in check_zhi_interaction_priority((guest_chi, chi)):
+        if {'Chính Ấn', 'Thiên Ấn'} & set(column_hidden_thap_than) and guest_hidden_thap_than[0] in ('Thiên Tài', 'Chính Tài') and "Tương khắc" in check_zhi_interaction_priority((guest_chi, chi)):
             predict.append(f'Ấn tinh gặp khắc, công việc dễ gặp trở ngại, xung đột, sai sót, mất tập trung, nên kiểm tra lại công việc trước khi hoàn thành.')
+
+        if column == 'month':
+            if 'Tương phá' in check_zhi_interaction_priority((guest_chi, chi)):
+                predict.append(f'{guest_chi} {chi} tương phá, công việc dễ gặp trở ngại, khó khăn, thị phi nhiều. Đề phòng tiểu nhân quấy phá.')
+            elif 'Tương xung' in check_zhi_interaction_priority((guest_chi, chi)):
+                predict.append(f'{guest_chi} {chi} tương xung, công việc dễ gặp mâu thuẫn, xung đột. Nên dĩ hoà vi quý.')
 
         # if guest_thap_than in ('Chính Tài', 'Thiên Tài') and column_can_thap_than in ('Chính Ấn', 'Thiên Ấn'):
         #     predict.append('Tài khắc Ấn, công việc dễ gặp sai sót, mất tập trung')
@@ -143,17 +146,75 @@ def career_predict_by_guest(bazi, guest: tuple):
                 guest_chi, chi_0, chi_1))
 
         if tam_hoi and Elemental.is_sinh(tam_hoi_elemental, day_master_elemental):
-            predict.append('Tam hội %s %s %s làm Ấn vượng nên công việc nhiều, bận rộn' % (guest_chi, chi_0, chi_1))
+            predict.append('Tam hội %s %s %s làm Ấn vượng nên công việc nhiều, bận rộn.' % (guest_chi, chi_0, chi_1))
 
         if tam_hoi and Elemental.is_khac(tam_hoi_elemental, day_master_elemental):
-            predict.append('Tam hội %s %s %s làm Quan Sát vượng nên công việc nhiều, bận rộn' % (guest_chi, chi_0, chi_1))
+            predict.append('Tam hội %s %s %s làm Quan Sát vượng nên công việc nhiều, bận rộn.' % (guest_chi, chi_0, chi_1))
 
         if tam_hop and Elemental.is_sinh(tam_hop_elemental, day_master_elemental):
-            predict.append('Tam hợp %s %s %s làm Ấn vượng nên công việc nhiều, bận rộn' % (guest_chi, chi_0, chi_1))
+            predict.append('Tam hợp %s %s %s làm Ấn vượng nên công việc nhiều, bận rộn.' % (guest_chi, chi_0, chi_1))
 
         if tam_hop and Elemental.is_khac(tam_hop_elemental, day_master_elemental):
-            predict.append('Tam hợp %s %s %s làm Quan Sát vượng nên công việc dễ gặp áp lực, căng thẳng' % (guest_chi, chi_0, chi_1))
+            predict.append('Tam hợp %s %s %s làm Quan Sát vượng nên công việc dễ gặp áp lực, căng thẳng.' % (guest_chi, chi_0, chi_1))
 
     predict = [s for s in predict if not any(s in other and s != other for other in predict)]
+
+    # Không có quan hệ gì thì xét can chi, thập thần của khách
+    if len(predict) == 0:
+        if 'Chính Ấn' == guest_hidden_thap_than[0]:
+            if 'Thương Quan' == guest_thap_than:
+                predict.append('Công việc tương đối nhiều và bận rộn, Thương Quan thấu can có nhiều ý tưởng, đầu óc nhạy bén nhưng cũng hay bay bổng.')
+            elif 'Chính Quan' == guest_thap_than:
+                predict.append('Quan Ấn tương sinh, công việc tương đối nhiều và bận rộn, Chính Quan thấu can dễ được quý nhân tương trợ, ủng hộ.')
+            elif 'Chính Tài' == guest_thap_than:
+                predict.append('Tài khắc Ấn, công việc dễ gặp sai sót, mất tập trung, dễ vị lợi ích cá nhân mà mất đi cơ hội.')
+            elif 'Chính Ấn' == guest_thap_than:
+                predict.append('Ấn tinh nhiều, công việc có nhiều bận rộn, có thể làm nhiều việc một lúc.')
+            elif 'Kiếp Tài' == guest_thap_than:
+                predict.append('Kiếp Tài thấu can, lại được Ấn vượng, công việc có sự mở rộng quan hệ, nhưng cũng dễ hao tài.')
+            else:
+                predict.append('Công việc tương đối nhiều và bận rộn.')
+
+        if 'Thiên Ấn' == guest_hidden_thap_than[0]:
+            if 'Thực Thần' == guest_thap_than:
+                predict.append('Công việc tương đối nhiều và bận rộn, Thực Thần thấu can dễ được người khác quý mến.')
+            elif 'Thất Sát' == guest_thap_than:
+                predict.append('Sát Ấn tương sinh, công việc tương đối nhiều và bận rộn, cũng dễ gặp áp lực từ cấp trên.')
+            elif 'Thiên Tài' == guest_thap_than:
+                predict.append('Tài khắc Ấn, công việc dễ gặp sai sót, mất tập trung, dễ vị lợi ích bên ngoài mà mất đi cơ hội.')
+            elif 'Thiên Ấn' == guest_thap_than:
+                predict.append('Ấn tinh nhiều, công việc có nhiều bận rộn, có thể làm nhiều việc một lúc.')
+            elif 'Tỷ Kiên' == guest_thap_than:
+                predict.append('Tỷ Kiên thấu can, lại được Ấn vượng, công việc có sự mở rộng quan hệ, nhưng cũng dễ hao tài.')
+            else:
+                predict.append('Công việc tương đối nhiều và bận rộn.')
+
+        if 'Chính Quan' == guest_hidden_thap_than[0]:
+            if 'Thương Quan' == guest_thap_than:
+                predict.append('Tổ hợp Thương Quan khắc Quan, nên chú ý đến công việc, dễ gặp thị phi, xung đột, hạn chế việc tranh cãi.')
+            elif 'Chính Quan' == guest_thap_than:
+                predict.append('Quan tinh song thể lực lượng vượng tướng, công việc tương đối nhiều và bận rộn, cần phải lưu ý giữ gìn sức khỏe, tinh thần, biết cân bằng công việc và cuộc sống.')
+            elif 'Chính Tài' == guest_thap_than:
+                predict.append('Tài sinh Quan, công việc và tài lộc cùng song hành mang lại nhiều cơ hội thăng tiến, phát triển.')
+            elif 'Chính Ấn' == guest_thap_than:
+                predict.append('Quan Ấn tương sinh, công việc tương đối nhiều và bận rộn, Chính Ấn thấu can dễ được quý nhân tương trợ, ủng hộ.')
+            elif 'Kiếp Tài' == guest_thap_than:
+                predict.append('Kiếp Tài thấu can, lại có Quan tinh kiểm soát nên công việc có sự mở rộng quan hệ, nhưng cũng dễ hao tài.')
+            else:
+                predict.append('Công việc tương đối áp lực, căng thẳng.')
+
+        if 'Thất Sát' == guest_hidden_thap_than[0]:
+            if 'Thực Thần' == guest_thap_than:
+                predict.append('Thực Thần chế Sát, Sát tinh được chế hoá, chăm chỉ và kiên trì sẽ đạt được thành quả tốt.')
+            elif 'Thất Sát' == guest_thap_than:
+                predict.append('Sát tinh quá vượng, công việc tương đối nhiều và bận rộn, cũng dễ gặp áp lực từ cấp trên.')
+            elif 'Thiên Tài' == guest_thap_than:
+                predict.append('Tài sinh Sát, công việc dễ gặp áp lực, stress, dễ vị lợi ích bên ngoài mà mất đi cơ hội.')
+            elif 'Thiên Ấn' == guest_thap_than:
+                predict.append('Sát Ấn tương sinh, chăm chỉ làm việc sẽ đạt được thành công, công việc tương đối nhiều và bận rộn.')
+            elif 'Tỷ Kiên' == guest_thap_than:
+                predict.append('Tỷ Kiên thấu can, toạ Sát, công việc có sự mở rộng quan hệ, nhưng cũng dễ hao tài.')
+            else:
+                predict.append('Công việc tương đối áp lực, căng thẳng.')
 
     return "\n".join(list(dict.fromkeys(predict)))

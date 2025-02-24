@@ -1,7 +1,7 @@
 from itertools import combinations
 
 from config.zhi import ZHI
-from gan import GAN
+from config.gan import GAN
 from zhi_util import check_zhi_interaction_priority
 
 def get_gan_from_bazi(bazi: list):
@@ -86,6 +86,3 @@ def find_gan_interaction(guest_can, host_can):
         if host_can == gan:
             return interaction
     return None
-
-def get_hidden_gans(zhi):
-    return ZHI[zhi]["hidden_gans"]

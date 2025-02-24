@@ -1,11 +1,33 @@
 # -*- encoding: utf-8 -*-
 
+# Tam hội
+THREE_GROUP = (
+    ("Thân", "Dậu", "Tuất"),
+    ("Dần", "Mão", "Thìn"),
+    ("Hợi", "Tý", "Sửu"),
+    ("Tị", "Ngọ", "Mùi")
+)
+
+THREE_GROUP_DICT = (
+    {"name": "Tam hội Kim", "elemental": "Kim", "zhi": ("Thân", "Dậu", "Tuất")},
+    {"name": "Tam hội Mộc", "elemental": "Mộc", "zhi": ("Dần", "Mão", "Thìn")},
+    {"name": "Tam hội Thủy", "elemental": "Thủy", "zhi": ("Hợi", "Tý", "Sửu")},
+    {"name": "Tam hội Hỏa", "elemental": "Hỏa", "zhi": ("Tị", "Ngọ", "Mùi")}
+)
+
 # Tam hợp
 THREE_COMBINATIONS = (
     ("Thân", "Tý", "Thìn"),
     ("Dần", "Ngọ", "Tuất"),
     ("Hợi", "Mão", "Mùi"),
     ("Tị", "Dậu", "Sửu")
+)
+
+THREE_COMBINATION_DICT = (
+    {"name": "Tam hợp Kim", "elemental": "Kim", "zhi": ("Tị", "Dậu", "Sửu")},
+    {"name": "Tam hợp Mộc", "elemental": "Mộc", "zhi": ("Hợi", "Mão", "Mùi")},
+    {"name": "Tam hợp Thủy", "elemental": "Thủy", "zhi": ("Thân", "Tý", "Thìn")},
+    {"name": "Tam hợp Hỏa", "elemental": "Hỏa", "zhi": ("Dần", "Ngọ", "Tuất")}
 )
 
 # Bán tam hợp
@@ -83,6 +105,13 @@ TWO_DESTRUCTION = (
     ("Thân", "Tị"),
     ("Tuất", "Mùi"),
     ("Sửu", "Thìn")
+)
+
+# Ám hợp
+TWO_ZHI_HIDDEN_COMBINATION = (
+    ("Thân", "Mão"),
+    ("Dần", "Sửu"),
+    ("Hợi", "Ngọ")
 )
 
 # Kiểm tra theo thứ tự: Tam hình, nhị hình, hại, phá, khắc, xung, tam hợp, nhị hợp

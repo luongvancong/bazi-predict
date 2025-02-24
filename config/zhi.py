@@ -112,4 +112,60 @@ ZHI = {
         },
         "hidden_gans": ["Kỷ", "Đinh", "Ất"]
     },
+    "Thân": {
+        "name": "Thân",
+        "element": "Kim",
+        "polarity": "Dương",
+        "interaction": {
+            "Nhị Hợp": ["Tị"],
+            "Xung": ["Dần"],
+            "Hình": ["Dần"],
+            "Phá": ["Tị"],
+            "Hại": ["Hợi"],
+            "Tam Hợp": ["Tý", "Thìn"]
+        },
+        "hidden_gans": ["Canh", "Nhâm", "Mậu"]
+    },
+    "Dậu": {
+        "name": "Dậu",
+        "element": "Kim",
+        "polarity": "Âm",
+        "interaction": {
+            "Nhị Hợp": ["Thìn"],
+            "Xung": ["Mão"],
+            "Hình": ["Dậu"],
+            "Phá": ["Tý"],
+            "Hại": ["Tuất"],
+            "Tam Hợp": ["Tị", "Sửu"]
+        },
+        "hidden_gans": ["Tân"]
+    },
+    "Tuất": {
+        "name": "Tuất",
+        "element": "Thổ",
+        "polarity": "Dương",
+        "interaction": {
+            "Nhị Hợp": ["Mão"],
+            "Xung": ["Thìn"],
+            "Hình": ["Sửu"],
+            "Phá": ["Mùi"],
+            "Hại": ["Dậu"],
+            "Tam Hợp": ["Dần", "Ngọ"]
+        },
+        "hidden_gans": ["Mậu", "Tân", "Đinh"]
+    },
+    "Hợi": {
+        "name": "Hợi",
+        "element": "Thủy",
+        "polarity": "Âm",
+        "interaction": {
+            "Nhị Hợp": ["Dần"],
+            "Xung": ["Tị"],
+            "Hình": ["Hợi"],
+            "Phá": ["Dần"],
+            "Hại": ["Thân"],
+            "Tam Hợp": ["Dần", "Ngọ"]
+        },
+        "hidden_gans": ["Nhâm", "Giáp"]
+    },
 }

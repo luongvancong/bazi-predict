@@ -5,6 +5,7 @@ from elemental_util import Elemental
 from util import find_gan_interaction, find_thap_than, group_pairs
 from zhi_util import is_tam_hinh, is_tam_hoi, get_tam_hoi_elemental, get_hidden_gans, get_interaction, \
     check_zhi_interaction_priority, is_tam_hop, get_tam_hop_elemental
+from core.than_sat import ThanSat
 
 CAREER_PREDICTION = [
     {
@@ -21,9 +22,9 @@ CAREER_PREDICTION = [
 ]
 
 
-def career_predict_by_guest(bazi: dict, guest: tuple):
-    guest_can = guest[0]
-    guest_chi = guest[1]
+def career_predict_by_guest(bazi: dict, guest: str):
+    guest_can = bazi[guest][0]
+    guest_chi = bazi[guest][1]
 
     column_labels = {
         "year": "Năm",
@@ -46,6 +47,9 @@ def career_predict_by_guest(bazi: dict, guest: tuple):
     guest_hidden_thap_than = []
     for hidden_gan in guest_hidden_gans:
         guest_hidden_thap_than.append(find_thap_than(hidden_gan, day_master))
+
+    than_sat = ThanSat(bazi)
+    van_xuong_items = than_sat.find_van_xuong()
 
     for column, (can, chi) in bazi.items():
         column_can_thap_than = find_thap_than(can, day_master)
@@ -85,7 +89,10 @@ def career_predict_by_guest(bazi: dict, guest: tuple):
                 predict.append('Tài khắc Ấn, công việc dễ gặp sai sót, mất tập trung.')
 
         if guest_thap_than == 'Chính Quan' and column == 'day' and interaction == 'Tương hợp':
-            predict.append('Chính Quan đến hợp với nhật chủ, công việc gặp được thuận lợi, hợp tác vui vẻ, cấp trên quý mến, ủng hộ.')
+            if any(item["column"] == guest for item in van_xuong_items):
+                predict.append('Chính Quan đến hợp với nhật chủ, lại gặp được Văn Xương, công việc gặp được thuận lợi, hợp tác vui vẻ, cấp trên quý mến, có cơ hội thăng tiến.')
+            else:
+                predict.append('Chính Quan đến hợp với nhật chủ, công việc gặp được thuận lợi, hợp tác vui vẻ, cấp trên quý mến, ủng hộ.')
 
         if guest_thap_than == 'Thất Sát' and column == 'day' and interaction == 'Tương khắc':
             predict.append('Thất Sát đến tương khắc với nhật chủ, công việc dễ gặp xung đột, mâu thuẫn, cần phải lưu ý.')
@@ -131,7 +138,7 @@ def career_predict_by_guest(bazi: dict, guest: tuple):
         # if guest_thap_than in ('Chính Tài', 'Thiên Tài') and column_can_thap_than in ('Chính Ấn', 'Thiên Ấn'):
         #     predict.append('Tài khắc Ấn, công việc dễ gặp sai sót, mất tập trung')
 
-    columns = bazi.keys()
+    columns = [key for key in bazi.keys() if key != guest]
     two_columns = group_pairs(columns)
     for pair in two_columns:
         chi_0 = bazi[pair[0]][1]

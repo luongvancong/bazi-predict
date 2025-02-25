@@ -1,9 +1,8 @@
 # -*- encoding: utf-8 -*-
 
 from career import career_predict_by_guest
-from config.gan import GAN
-from util import find_thap_than, get_all_zhi_interaction
-from zhi_util import get_hidden_gans, check_zhi_interaction_priority
+from core.than_sat import ThanSat
+from util import print_message
 
 print('---- RECORD 39-----')
 bazi = {
@@ -76,19 +75,59 @@ bazi = {
 # print("\n")
 
 print('----- RECORD 38----')
-bazi = {
-    "year": ("Mậu", "Thìn"),
-    "month": ("Quý", "Hợi"),
-    "day": ("Canh", "Ngọ"),
-    "hour": ("Giáp", "Thân"),
-    "dai_van": ("Kỷ", "Mùi"),
-    "luu_nien": ("Ất", "Tị"),
-    "luu_nguyet": ("Mậu", "Dần")
-}
 
-print('---------Mậu Dần---------')
-guest = ("Mậu", "Dần")
-print(career_predict_by_guest(bazi, "luu_nguyet"))
-print("\n")
+
+months = (
+    ("Mậu", "Dần"),
+    ("Kỷ", "Mão"),
+    ("Canh", "Thìn"),
+    ("Tân", "Tị"),
+    ("Nhâm", "Ngọ"),
+    ("Quý", "Mùi"),
+    ("Giáp", "Thân"),
+    ("Ất", "Dậu"),
+    ("Bính", "Tuất"),
+    ("Đinh", "Hợi"),
+    ("Mậu", "Tý"),
+    ("Kỷ", "Sửu")
+)
+
+# for month in months:
+#     bazi = {
+#         "year": ("Mậu", "Thìn"),
+#         "month": ("Quý", "Hợi"),
+#         "day": ("Canh", "Ngọ"),
+#         "hour": ("Giáp", "Thân"),
+#         "dai_van": ("Kỷ", "Mùi"),
+#         "luu_nien": ("Ất", "Tị"),
+#         "luu_nguyet": month
+#     }
+#     print(f'---------{" ".join(month)}---------')
+#     print(career_predict_by_guest(bazi, "luu_nguyet"))
+#     print("\n")
+
+# bazi = {
+#         "year": ("Ất", "Hợi"),
+#         "month": ("Bính", "Tuất"),
+#         "day": ("Giáp", "Tý"),
+#         "hour": ("Nhâm", "Thân"),
+#     }
+# than_sat = ThanSat(bazi)
+# print_message(than_sat.find_luc_giap_khong_vong())
+
+print('----- RECORD 25----')
+for month in months:
+    bazi = {
+        "year": ("Ất", "Hợi"),
+        "month": ("Bính", "Tuất"),
+        "day": ("Giáp", "Tuất"),
+        "hour": ("Nhâm", "Thân"),
+        "dai_van": ("Quý", "Mùi"),
+        "luu_nien": ("Ất", "Tị"),
+        "luu_nguyet": month
+    }
+    print(f'---------{" ".join(month)}---------')
+    print(career_predict_by_guest(bazi, "luu_nguyet"))
+    print("\n")
 
 # print (check_zhi_interaction_priority(("Thân", "Mão")))

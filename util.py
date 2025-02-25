@@ -1,8 +1,9 @@
+import inspect
 from itertools import combinations
-
 from config.zhi import ZHI
 from config.gan import GAN
-from zhi_util import check_zhi_interaction_priority
+from zhi_util import check_zhi_interaction_priority, get_hidden_gans
+
 
 def get_gan_from_bazi(bazi: list):
     return bazi[0], bazi[2], bazi[4], bazi[6]
@@ -86,3 +87,44 @@ def find_gan_interaction(guest_can, host_can):
         if host_can == gan:
             return interaction
     return None
+
+def get_hidden_thap_than(zhi, day_master):
+    hidden_gans = get_hidden_gans(zhi)
+    hidden_thap_than = []
+    for gan in hidden_gans:
+        thap_thap = find_thap_than(gan, day_master)
+        hidden_thap_than.append(thap_thap)
+    return hidden_thap_than
+
+def count_all_thap_than(bazi: dict, thap_than_to_count: tuple = (), only_count_primary: bool = False):
+    if len(thap_than_to_count) > 0:
+        count = 0
+        day_master = bazi['day'][0]
+        for column, (can, chi) in bazi.items():
+            if column == 'day':
+                hidden_thap_than = get_hidden_thap_than(chi, day_master)
+                if only_count_primary:
+                    hidden_thap_than = [hidden_thap_than[0]]
+                for h in hidden_thap_than:
+                    if h in thap_than_to_count:
+                        count += 1
+                continue
+            can_thap_than = find_thap_than(can, day_master)
+            hidden_thap_than = get_hidden_thap_than(chi, day_master)
+            if only_count_primary:
+                hidden_thap_than = [hidden_thap_than[0]]
+            if can_thap_than in thap_than_to_count:
+                count += 1
+            for h in hidden_thap_than:
+                if h in thap_than_to_count:
+                    count += 1
+        return count
+    return 0
+
+def print_message(message):
+    frame = inspect.currentframe().f_back
+    file_name = frame.f_code.co_filename
+    line_number = frame.f_lineno
+    print('-----------------------------------------------------------------------------------------------------')
+    print(f"{message} | (Line: {line_number}, File: {file_name})")
+    print('-----------------------------------------------------------------------------------------------------')

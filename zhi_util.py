@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 
-from config.zhi import ZHI
 from config.interaction_config import THREE_COMBINATIONS, TWO_COMBINATIONS, TWO_CLASS, TWO_CONTROL, TWO_HARM, \
     THREE_PUNISHMENT, TWO_PUNISHMENT, HALF_THREE_COMBINATIONS, TWO_DESTRUCTION, THREE_GROUP, THREE_GROUP_DICT, \
     TWO_ZHI_HIDDEN_COMBINATION, THREE_COMBINATION_DICT
+from config.zhi import ZHI
 
 
 def get_interaction(guest: str, host: list):
@@ -110,45 +110,48 @@ def is_tam_hop(a, b, c):
 
 def is_nhi_hop(a, b):
     for value in TWO_COMBINATIONS:
-        if a in value and b in value:
+        if a in value and b in value and a != b:
             return True
     return False
 
 def is_tuong_hai(a, b):
     for value in TWO_HARM:
-        if a in value and b in value:
+        if a in value and b in value and a != b:
             return True
     return False
 
-def is_tuong_phap(a, b):
+def is_tuong_pha(a, b):
     for value in TWO_DESTRUCTION:
-        if a in value and b in value:
+        if a in value and b in value and a != b:
             return True
     return False
 
 def is_tuong_xung(a, b):
     for value in TWO_CLASS:
-        if a in value and b in value:
+        if a in value and b in value and a != b:
             return True
     return False
 
 def is_tuong_khac(a, b):
     for value in TWO_CONTROL:
-        if a in value and b in value:
+        if a in value and b in value and a != b:
             return True
     return False
 
 def is_tam_hinh(a, b, c):
     for value in THREE_PUNISHMENT:
-        if a in value and b in value and c in value:
+        if a in value and b in value and c in value and a != b and b != c and a != c:
             return True
     return False
 
 def is_tu_hinh(a, b):
     for value in TWO_PUNISHMENT:
-        if a in value and b in value:
+        if a in value and b in value and a == b:
             return True
     return False
+
+def get_zhi_polarity(zhi):
+    return ZHI[zhi]["polarity"]
 
 def get_hidden_gans(zhi):
     return ZHI[zhi]["hidden_gans"]

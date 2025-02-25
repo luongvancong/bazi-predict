@@ -1,0 +1,5 @@
+an_tinh_nhieu and have_trach_ma then Ấn tinh nhiều, lại có thêm Trạch Mã công việc có nhiều bận rộn, đi lại công tác nhiều, có thể làm nhiều việc một lúc.
+anh_tinh_nhieu then Ấn tinh nhiều, công việc có nhiều bận rộn, có thể làm nhiều việc một lúc.
+an_tinh_gap_khac then Ấn tinh gặp khắc, công việc dễ gặp trở ngại, xung đột, sai sót, mất tập trung, nên kiểm tra lại công việc trước khi hoàn thành.
+an_tinh_gap_pha then Ấn tinh gặp phá, công việc dễ gặp thị phi, xung đột, đổ vỡ, nên kiểm tra lại công việc trước khi hoàn thành.
+an_tinh_gap_hinh and an_tinh_gap_pha then Ấn tinh gặp hình phá, công việc dễ gặp thị phi, xung đột, đổ vỡ, nên kiểm tra lại công việc trước khi hoàn thành.

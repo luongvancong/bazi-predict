@@ -121,6 +121,9 @@ def count_all_thap_than(bazi: dict, thap_than_to_count: tuple = (), only_count_p
         return count
     return 0
 
+def is_many_thap_than(bazi: dict, thap_than_to_count: tuple = (), only_count_primary: bool = False, count: int = 2):
+    return count_all_thap_than(bazi, thap_than_to_count, only_count_primary) > count
+
 def print_message(message):
     frame = inspect.currentframe().f_back
     file_name = frame.f_code.co_filename

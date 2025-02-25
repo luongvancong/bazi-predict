@@ -277,13 +277,48 @@ def career_predict_by_guest(bazi: dict, guest: str):
 
     # print_message(guest_zhi_interactions)
 
+    # @TODO: Tổ chức lại các trạng thái của 10 thần
+    # an_tinh_interactions = []
+    # quan_tinh_interactions = []
+
     column_hidden_thap_than = []
-    for column, (can, chi) in bazi.items():
-        if column == guest:
-            continue
-        hidden_thap_than = get_hidden_thap_than(chi, day_master)
-        for hg in hidden_thap_than:
-            column_hidden_thap_than.append(hg)
+    quan_tinh_in_hinh = False
+    quan_tinh_in_hai = False
+    quan_tinh_in_pha = False
+    an_tinh_in_hinh = False
+    an_tinh_in_hai = False
+    an_tinh_in_pha = False
+    an_tinh_in_khac = False
+    an_tinh_in_xung = False
+    for x in guest_zhi_interactions:
+        for col in x['column']:
+            if col != guest:
+                chi = bazi[col][1]
+                # print_message(chi)
+                hidden_thap_than = get_hidden_thap_than(chi, day_master)
+                for hg in hidden_thap_than:
+                    column_hidden_thap_than.append(hg)
+                    if hg in ('Thất Sát', 'Chính Quan'):
+                        if x['name'] == 'Tam hình' or x['name'] == 'Tự hình':
+                            quan_tinh_in_hinh = True
+                        if x['name'] == 'Tương hại':
+                            quan_tinh_in_hai = True
+                        if x['name'] == 'Tương phá':
+                            quan_tinh_in_pha = True
+                    if hg in ('Chính Ấn', 'Thiên Ấn'):
+                        if x['name'] == 'Tam hình' or x['name'] == 'Tự hình':
+                            an_tinh_in_hinh = True
+                        if x['name'] == 'Tương hại':
+                            an_tinh_in_hai = True
+                        if x['name'] == 'Tương phá':
+                            an_tinh_in_pha = True
+                        if x['name'] == 'Tương khắc':
+                            an_tinh_in_khac = True
+                        if x['name'] == 'Tương xung':
+                            an_tinh_in_xung = True
+
+    column_hidden_thap_than = list(set(column_hidden_thap_than))
+    # print_message(guest_zhi_interactions)
 
     guest_have_tam_hinh = any(item["name"] == "Tam hình" for item in guest_zhi_interactions)
     guest_have_tu_hinh = any(item["name"] == "Tự hình" for item in guest_zhi_interactions)
@@ -293,19 +328,19 @@ def career_predict_by_guest(bazi: dict, guest: str):
     guest_have_tuong_xung = any(item["name"] == "Tương xung" for item in guest_zhi_interactions)
 
     if {'Chính Ấn', 'Thiên Ấn'} & set(column_hidden_thap_than) and guest_have_tam_hinh:
-        if guest_have_tuong_khac or guest_have_tuong_xung:
+        if an_tinh_in_khac or an_tinh_in_xung:
             predict.append('Ấn tinh gặp tam hình, lại thêm xung, khắc, công việc dễ gặp trở ngại, khó khăn, thị phi nhiều, mâu thuẫn nhiều, cần phải lưu ý chuyện giấy tờ, các thủ tục pháp lý.')
         else:
             predict.append('Ấn tinh gặp tam hình, công việc dễ gặp trở ngại, khó khăn, thị phi nhiều, cần phải lưu ý chuyện giấy tờ, các thủ tục pháp lý.')
     else:
         if {'Chính Ấn', 'Thiên Ấn'} & set(column_hidden_thap_than) and (guest_have_tu_hinh or guest_have_tuong_hai or guest_have_tuong_pha):
-            if guest_have_tu_hinh and guest_have_tuong_hai and guest_have_tuong_pha:
+            if an_tinh_in_hinh and an_tinh_in_hai and an_tinh_in_pha:
                 predict.append(f'Ấn tinh gặp hình, hại, phá, công việc dễ gặp thị phi, sai sót, mất tập trung, tiểu nhân quấy phá, nên kiểm tra lại công việc trước khi hoàn thành.')
-            if guest_have_tu_hinh and guest_have_tuong_hai:
+            if an_tinh_in_hinh and an_tinh_in_hai:
                 predict.append(f'Ấn tinh gặp hình, hại, công việc dễ gặp thị phi, sai sót, mất tập trung, tiểu nhân quấy phá, cẩn thận giấy tờ, số liệu, nên kiểm tra lại công việc trước khi hoàn thành.')
-            if guest_have_tu_hinh and guest_have_tuong_pha:
+            if an_tinh_in_hinh and an_tinh_in_pha:
                 predict.append(f'Ấn tinh gặp hình, phá, công việc dễ gặp thị phi, sai sót, mất tập trung, tiểu nhân quấy phá, cẩn thận giấy tờ, số liệu, nên kiểm tra lại công việc trước khi hoàn thành.')
-            if guest_have_tuong_hai and guest_have_tuong_pha:
+            if an_tinh_in_hai and an_tinh_in_pha:
                 predict.append(f'Ấn tinh gặp hại, phá, công việc dễ gặp thị phi, sai sót, mất tập trung, tiểu nhân quấy phá, nên kiểm tra lại công việc trước khi hoàn thành.')
 
     if {'Chính Quan', 'Thất Sát'} & set(column_hidden_thap_than) and guest_have_tam_hinh:
@@ -315,13 +350,13 @@ def career_predict_by_guest(bazi: dict, guest: str):
             predict.append('Quan tinh gặp tam hình, công việc dễ gặp trở ngại, khó khăn, thị phi nhiều, cần phải lưu ý chuyện giấy tờ, các thủ tục pháp lý.')
     else:
         if {'Chính Quan', 'Thất Sát'} & set(column_hidden_thap_than) and (guest_have_tu_hinh or guest_have_tuong_hai or guest_have_tuong_pha):
-            if guest_have_tu_hinh and guest_have_tuong_hai and guest_have_tuong_pha:
+            if quan_tinh_in_hinh and quan_tinh_in_hai and quan_tinh_in_hai:
                 predict.append(f'Quan tinh gặp hình, hại, phá, công việc dễ gặp thị phi, sai sót, mất tập trung, tiểu nhân quấy phá, nên kiểm tra lại công việc trước khi hoàn thành.')
-            if guest_have_tu_hinh and guest_have_tuong_hai:
+            if quan_tinh_in_hinh and quan_tinh_in_hai:
                 predict.append(f'Quan tinh gặp hình, hại, công việc dễ gặp thị phi, sai sót, mất tập trung, tiểu nhân quấy phá, cẩn thận giấy tờ, số liệu, nên kiểm tra lại công việc trước khi hoàn thành.')
-            if guest_have_tu_hinh and guest_have_tuong_pha:
+            if quan_tinh_in_hinh and quan_tinh_in_pha:
                 predict.append(f'Quan tinh gặp hình, phá, công việc dễ gặp thị phi, sai sót, mất tập trung, tiểu nhân quấy phá, cẩn thận giấy tờ, số liệu, nên kiểm tra lại công việc trước khi hoàn thành.')
-            if guest_have_tuong_hai and guest_have_tuong_pha:
+            if quan_tinh_in_hai and quan_tinh_in_pha:
                 predict.append(f'Quan tinh gặp hại, phá, công việc dễ gặp thị phi, sai sót, mất tập trung, tiểu nhân quấy phá, nên kiểm tra lại công việc trước khi hoàn thành.')
 
     predict = [s for s in predict if not any(s in other and s != other for other in predict)]

@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 
-from career import career_predict_by_guest
 from config.gan import GAN
 from util import find_thap_than, get_all_zhi_interaction
 from zhi_util import get_hidden_gans

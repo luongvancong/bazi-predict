@@ -7,20 +7,6 @@ from zhi_util import is_tam_hinh, is_tam_hoi, get_tam_hoi_elemental, get_hidden_
     check_zhi_interaction_priority, is_tam_hop, get_tam_hop_elemental
 from core.than_sat import ThanSat
 
-CAREER_PREDICTION = [
-    {
-        "condition": "Ấn tinh nhiều",
-        "description": "Công việc có nhiều bận rộn, có thể làm nhiều việc một lúc"
-    },
-    {
-        "condition": "Ấn tinh gặp khắc",
-        "description": "Công việc dễ gặp xung đột, mâu thuẫn",
-        "modifier": {
-            "Tài khắc": "Công việc dễ gặp xung đột, mâu thuẫn liên quan đến các vấn đề số liệu, tài chính, kế toán"
-        }
-    }
-]
-
 
 def career_predict_by_guest(bazi: dict, guest: str):
     guest_can = bazi[guest][0]

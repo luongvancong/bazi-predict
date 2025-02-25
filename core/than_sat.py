@@ -195,3 +195,30 @@ class ThanSat:
                     })
 
         return result
+
+    def find_vong_than(self):
+        bazi = self.bazi
+        chi_nam = bazi['year'][1]
+        chi_ngay = bazi['day'][1]
+        collection = []
+
+        arr = {
+            "year": chi_nam,
+            "day": chi_ngay
+        }
+
+        vong_than_rules = {
+            ("Dần", "Ngọ", "Tuất"): "Tị",
+            ("Tị", "Dậu", "Sửu"): "Thân",
+            ("Thân", "Tý", "Thìn"): "Hợi",
+            ("Hợi", "Mão", "Mùi"): "Dần"
+        }
+
+        for k, (can, chi) in bazi.items():
+            for chi_test in arr.values():
+                for key_group, target in vong_than_rules.items():
+                    if chi_test in key_group and chi == target:
+                        collection.append({"column": k, "name": "Vong Thần"})
+
+        return collection
+

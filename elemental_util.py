@@ -8,3 +8,7 @@ class Elemental:
     @staticmethod
     def is_khac(a, b):
         return ELEMENTAL[a]["interactions"]["Tương khắc"] == b
+
+    @staticmethod
+    def get_health(a):
+        return ELEMENTAL[a]["health"]

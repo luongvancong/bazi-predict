@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-from predict.career import career_predict_by_guest
+from predict.health import health_predict_by_guest
 
 print('---- RECORD 39-----')
 bazi = {
@@ -120,12 +120,15 @@ for month in months:
         "month": ("Bính", "Tuất"),
         "day": ("Giáp", "Tuất"),
         "hour": ("Nhâm", "Thân"),
+        "thai_nguyen": ("Đinh", "Sửu"),
+        "menh_cung": ("Đinh", "Hợi"),
+        "than_cung": ("Quý", "Mùi"),
         "dai_van": ("Quý", "Mùi"),
         "luu_nien": ("Ất", "Tị"),
         "luu_nguyet": month
     }
     print(f'---------{" ".join(month)}---------')
-    print(career_predict_by_guest(bazi, "luu_nguyet"))
+    print(health_predict_by_guest(bazi, 1, "luu_nguyet"))
     print("\n")
 
 # print (check_zhi_interaction_priority(("Thân", "Mão")))

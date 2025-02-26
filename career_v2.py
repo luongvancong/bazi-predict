@@ -12,8 +12,8 @@ rule_map = {
     frozenset(["Quan Ấn tương sinh"]): "Quan ấn tương sinh, công việc thuận lợi, dễ gặp sự giúp đỡ từ người khác.",
     frozenset(["Quan Ấn tương sinh", "khách có Văn Xương"]): "Quan ấn tương sinh, có Văn Xương, công việc thuận lợi, dễ gặp sự giúp đỡ từ người khác.",
     frozenset(["Quan Ấn tương sinh, có hình, hại, phá"]): "Quan tinh gặp hình, hại, phá nhưng có Quan Ấn tương sinh, công việc tuy có trở ngại nhưng vẫn có quý nhân giúp đỡ, có thể xoay chuyển tình thế.",
-    frozenset(["Quan tinh thấu can gặp xung khắc"]): 'Quan tinh thấu can lại gặp xung, khắc, công việc dễ gặp trở ngại, khó khăn, thị phi nhiều, mâu thuẫn nhiều, cần phải lưu ý chuyện giấy tờ, các thủ tục pháp lý.',
-    frozenset(["Quan tinh thấu can gặp xung khắc", "Quan Ấn tương sinh"]): 'Quan tinh tương sinh là tốt tuy nhiên vẫn tồn tại xung, khắc, công việc có sự thuận lợi nhất định nhưng cũng cần phải cẩn thận với những trở ngại, khó khăn.',
+    frozenset(["Quan tinh thấu can", "Quan tinh gặp xung khắc"]): 'Quan tinh thấu can lại gặp xung, khắc, công việc dễ gặp trở ngại, khó khăn, thị phi nhiều, mâu thuẫn nhiều, cần phải lưu ý chuyện giấy tờ, các thủ tục pháp lý.',
+    frozenset(["Quan tinh thấu can", "Quan tinh gặp xung khắc", "Quan Ấn tương sinh"]): 'Quan ấn tương sinh là tốt tuy nhiên vẫn tồn tại xung, khắc, công việc có sự thuận lợi nhất định nhưng cũng cần phải cẩn thận với những trở ngại, khó khăn.',
     frozenset(["Ấn tinh nhiều", "khách có Trạch Mã"]): "Ấn tinh nhiều, lại có thêm Trạch Mã công việc có nhiều bận rộn, đi lại công tác nhiều, có thể làm nhiều việc một lúc."
     # frozenset(["khách có Văn Xương"]): None,
     # frozenset(['Quan tinh gặp hình', 'khách có Văn Xương', 'Quan Ấn tương sinh']): '123'
@@ -63,7 +63,9 @@ conditions = [
     (quan_an_tuong_sinh, "Quan Ấn tương sinh"),
     (quan_tinh_thau_can_gap_xung_khac, "Quan tinh thấu can gặp xung khắc"),
     (an_tinh_nhieu, "Ấn tinh nhiều"),
-    (guest_have_trach_ma, "khách có Trạch Mã")
+    (guest_have_trach_ma, "khách có Trạch Mã"),
+    (True, "Quan tinh thấu can"),
+    # (True, "Quan tinh gặp xung khắc")
 ]
 
 
@@ -83,27 +85,30 @@ def find_best_match(active_conditions, rule_map):
 
 
 def find_best_match_multi(active_conditions, rule_map):
-    """Tìm tất cả các tổ hợp con hợp lệ trong rule_map, ưu tiên tổ hợp có nhiều điều kiện nhất"""
-    matched_predictions = []
-    max_condition_count = 0  # Số điều kiện lớn nhất trong rule_map khớp
+    """Chỉ lấy các tổ hợp điều kiện lớn nhất, loại bỏ các tổ hợp nhỏ nằm trong tổ hợp lớn."""
+    matched_predictions = {}
 
-    # Thử tất cả các tổ hợp con của active_conditions (từ lớn đến nhỏ)
+    # Tìm tất cả các tổ hợp con hợp lệ trong rule_map
     for i in range(len(active_conditions), 0, -1):
         for subset in itertools.combinations(active_conditions, i):
             subset_frozen = frozenset(subset)
             if subset_frozen in rule_map:
-                # Nếu tổ hợp này có nhiều điều kiện hơn tổ hợp trước đó, reset danh sách
-                if len(subset) > max_condition_count:
-                    max_condition_count = len(subset)
-                    matched_predictions = [rule_map[subset_frozen]]  # Chỉ lấy tổ hợp có điều kiện lớn nhất
-                elif len(subset) == max_condition_count:
-                    matched_predictions.append(rule_map[subset_frozen])  # Thêm nếu cùng mức ưu tiên
+                matched_predictions[subset_frozen] = rule_map[subset_frozen]
+
+    # Loại bỏ các tổ hợp nhỏ nếu chúng nằm trong tổ hợp lớn hơn
+    filtered_predictions = []
+    sorted_keys = sorted(matched_predictions.keys(), key=len, reverse=True)  # Sắp xếp tổ hợp lớn trước
+
+    for i, key in enumerate(sorted_keys):
+        if any(key < larger_key for larger_key in sorted_keys[:i]):  # Kiểm tra nếu bị bao phủ bởi tổ hợp lớn hơn
+            continue  # Bỏ qua tổ hợp nhỏ hơn
+        filtered_predictions.append(matched_predictions[key])
 
     # Nếu không có kết quả nào khớp, trả về câu mặc định
-    if not matched_predictions:
+    if not filtered_predictions:
         return ["Không có dự đoán cho trường hợp này"]
 
-    return matched_predictions
+    return filtered_predictions
 
 # Lọc ra các điều kiện đúng
 active_conditions = frozenset(name for cond, name in conditions if cond)

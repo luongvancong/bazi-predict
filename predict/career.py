@@ -2,6 +2,7 @@
 from config.gan import GAN
 from config.interaction_config import TWO_ZHI_HIDDEN_COMBINATION
 from elemental_util import Elemental
+from gan_util import GanUtil
 from util import find_gan_interaction, find_thap_than, group_pairs, print_message, get_hidden_thap_than, count_all_thap_than
 from zhi_util import is_tam_hinh, is_tam_hoi, get_tam_hoi_elemental, get_hidden_gans, get_interaction, \
     check_zhi_interaction_priority, is_tam_hop, get_tam_hop_elemental, is_nhi_hop, is_tuong_hai, is_tuong_pha, is_tuong_xung, is_tu_hinh, is_tuong_khac
@@ -11,6 +12,11 @@ from core.than_sat import ThanSat
 def career_predict_by_guest(bazi: dict, guest: str):
     guest_can = bazi[guest][0]
     guest_chi = bazi[guest][1]
+
+    # B1. Luận tương tác thiên can, thập thần, có phối trụ, thần sát
+    # B2. Luận tương tác địa chi, thập thần, có phối trụ, thần sát
+    # B3. Không có gì luận tổ hợp khách trụ
+
 
     column_labels = {
         "year": "Năm",
@@ -160,13 +166,48 @@ def career_predict_by_guest(bazi: dict, guest: str):
             elif 'Tương xung' in zhi_interactions:
                 predict.append(f'{guest_chi} {chi} tương xung, công việc dễ gặp mâu thuẫn, xung đột. Nên dĩ hoà vi quý.')
 
+    guest_can_interactions = []
+    for column, (can, chi) in bazi.items():
+        if column not in ['year', 'month', 'day', 'hour', 'menh_cung']:
+            continue
+
+        is_xung = GanUtil.is_xung(guest_can, can)
+        is_khac = GanUtil.is_khac(guest_can, can)
+
+        if is_xung:
+            guest_can_interactions.append({
+                "column": [column],
+                "can": [can],
+                "thap_than": [find_thap_than(can, day_master)],
+                "name": "Tương xung"
+            })
+
+        if is_khac:
+            guest_can_interactions.append({
+                "column": [column],
+                "can": [can],
+                "thap_than": [find_thap_than(can, day_master)],
+                "name": "Tương khắc"
+            })
+
 
     guest_zhi_interactions = []
     columns = [key for key in bazi.keys() if key != guest]
     two_columns = group_pairs(columns)
     for pair in two_columns:
-        chi_0 = bazi[pair[0]][1]
-        chi_1 = bazi[pair[1]][1]
+        column_0 = pair[0]
+        column_1 = pair[1]
+        can_0 = bazi[column_0][0]
+        can_1 = bazi[column_1][0]
+        chi_0 = bazi[column_0][1]
+        chi_1 = bazi[column_1][1]
+
+        is_base_bazi_columns = {column_0, column_1} & {'year', 'month', 'day', 'hour'}
+        if not is_base_bazi_columns:
+            continue
+
+        # print_message([column_0, column_1, chi_0, chi_1])
+
         tam_hinh = is_tam_hinh(guest_chi, chi_0, chi_1)
         tam_hoi = is_tam_hoi(guest_chi, chi_0, chi_1)
         tam_hoi_elemental = get_tam_hoi_elemental(guest_chi)
@@ -179,24 +220,29 @@ def career_predict_by_guest(bazi: dict, guest: str):
         _is_tuong_pha = is_tuong_pha(guest_chi, chi_0) or is_tuong_pha(guest_chi, chi_1)
         _is_tuong_xung = is_tuong_xung(guest_chi, chi_0) or is_tuong_xung(guest_chi, chi_1)
         _is_tuong_khac = is_tuong_khac(guest_chi, chi_0) or is_tuong_khac(guest_chi, chi_1)
+        _is_tam_hoi = is_tam_hoi(guest_chi, chi_0, chi_1)
+        _is_tam_hop = is_tam_hop(guest_chi, chi_0, chi_1)
 
         if tam_hinh:
             guest_zhi_interactions.append({
                 "column": (guest, pair[0], pair[1]),
                 "zhi": (guest_chi, chi_0, chi_1),
+                "thap_than": [guest_thap_than] + [x for x in get_hidden_thap_than(chi_0, day_master)] + [x for x in get_hidden_thap_than(chi_1, day_master)],
                 "name": "Tam hình"
             })
+
         elif _is_tu_hinh:
             guest_zhi_interactions.append({
                 "column": is_tu_hinh(guest_chi, chi_0) and (guest, pair[0]) or (guest, pair[1]),
                 "zhi": is_tu_hinh(guest_chi, chi_0) and (guest_chi, chi_0) or (guest_chi, chi_1),
+                "thap_than": [guest_thap_than] + [x for x in get_hidden_thap_than(chi_0, day_master)] + [x for x in get_hidden_thap_than(chi_1, day_master)],
                 "name": "Tự hình"
             })
-
         if _is_tuong_hai:
             guest_zhi_interactions.append({
                 "column": is_tuong_hai(guest_chi, chi_0) and (guest, pair[0]) or (guest, pair[1]),
                 "zhi": is_tuong_hai(guest_chi, chi_0) and (guest_chi, chi_0) or (guest_chi, chi_1),
+                "thap_than": [guest_thap_than] + [x for x in get_hidden_thap_than(chi_0, day_master)] + [x for x in get_hidden_thap_than(chi_1, day_master)],
                 "name": "Tương hại"
             })
 
@@ -204,6 +250,7 @@ def career_predict_by_guest(bazi: dict, guest: str):
             guest_zhi_interactions.append({
                 "column": is_tuong_pha(guest_chi, chi_0) and (guest, pair[0]) or (guest, pair[1]),
                 "zhi": is_tuong_pha(guest_chi, chi_0) and (guest_chi, chi_0) or (guest_chi, chi_1),
+                "thap_than": [guest_thap_than] + [x for x in get_hidden_thap_than(chi_0, day_master)] + [x for x in get_hidden_thap_than(chi_1, day_master)],
                 "name": "Tương phá"
             })
 
@@ -211,6 +258,7 @@ def career_predict_by_guest(bazi: dict, guest: str):
             guest_zhi_interactions.append({
                 "column": is_tuong_xung(guest_chi, chi_0) and (guest, pair[0]) or (guest, pair[1]),
                 "zhi": is_tuong_xung(guest_chi, chi_0) and (guest_chi, chi_0) or (guest_chi, chi_1),
+                "thap_than": [guest_thap_than] + [x for x in get_hidden_thap_than(chi_0, day_master)] + [x for x in get_hidden_thap_than(chi_1, day_master)],
                 "name": "Tương xung"
             })
 
@@ -218,6 +266,7 @@ def career_predict_by_guest(bazi: dict, guest: str):
             guest_zhi_interactions.append({
                 "column": is_tuong_khac(guest_chi, chi_0) and (guest, pair[0]) or (guest, pair[1]),
                 "zhi": is_tuong_khac(guest_chi, chi_0) and (guest_chi, chi_0) or (guest_chi, chi_1),
+                "thap_than": [guest_thap_than] + [x for x in get_hidden_thap_than(chi_0, day_master)] + [x for x in get_hidden_thap_than(chi_1, day_master)],
                 "name": "Tương khắc"
             })
 
@@ -225,6 +274,7 @@ def career_predict_by_guest(bazi: dict, guest: str):
             guest_zhi_interactions.append({
                 "column": is_nhi_hop(guest_chi, chi_0) and (guest, pair[0]) or (guest, pair[1]),
                 "zhi": is_nhi_hop(guest_chi, chi_0) and (guest_chi, chi_0) or (guest_chi, chi_1),
+                "thap_than": [guest_thap_than] + [x for x in get_hidden_thap_than(chi_0, day_master)] + [x for x in get_hidden_thap_than(chi_1, day_master)],
                 "name": "Nhị hợp"
             })
 
@@ -285,16 +335,46 @@ def career_predict_by_guest(bazi: dict, guest: str):
     quan_tinh_in_hinh = False
     quan_tinh_in_hai = False
     quan_tinh_in_pha = False
+    quan_tinh_in_xung = False
+    quan_tinh_in_khac = False
     an_tinh_in_hinh = False
     an_tinh_in_hai = False
     an_tinh_in_pha = False
     an_tinh_in_khac = False
     an_tinh_in_xung = False
+
+    for x in guest_can_interactions:
+        if {'Chính Ấn', 'Thiên Ấn'} & set(x['thap_than']):
+            if x['name'] == 'Tương xung':
+                an_tinh_in_xung = True
+            if x['name'] == 'Tương khắc':
+                an_tinh_in_khac = True
+        if {'Chính Quan', 'Thất Sát'} & set(x['thap_than']):
+            if x['name'] == 'Tương xung':
+                quan_tinh_in_xung = True
+            if x['name'] == 'Tương khắc':
+                quan_tinh_in_khac = True
+
+    if quan_tinh_in_xung or quan_tinh_in_khac:
+        if quan_tinh_in_xung and quan_tinh_in_khac:
+            predict.append('Quan tinh thấu can lại gặp xung, khắc, công việc dễ gặp trở ngại, khó khăn, thị phi nhiều, mâu thuẫn nhiều, cần phải lưu ý chuyện giấy tờ, các thủ tục pháp lý.')
+        elif quan_tinh_in_xung:
+            predict.append('Quan tinh thấu can lại gặp xung, công việc dễ gặp trở ngại, khó khăn, thị phi nhiều, mâu thuẫn nhiều, cần phải lưu ý chuyện giấy tờ, các thủ tục pháp lý.')
+        elif quan_tinh_in_khac:
+            predict.append('Quan tinh thấu can lại gặp khắc, công việc dễ gặp trở ngại, khó khăn, thị phi nhiều, mâu thuẫn nhiều, cần phải lưu ý chuyện giấy tờ, các thủ tục pháp lý.')
+
+    if an_tinh_in_xung or an_tinh_in_khac:
+        if an_tinh_in_xung and an_tinh_in_khac:
+            predict.append('Ấn tinh thấu can lại gặp xung, khắc, công việc dễ gặp trở ngại, khó khăn, thị phi nhiều, mâu thuẫn nhiều, công việc có sự thay đổi, biến động.')
+        elif an_tinh_in_xung:
+            predict.append('Ấn tinh thấu can lại gặp xung, công việc dễ gặp trở ngại, khó khăn, thị phi nhiều, mâu thuẫn nhiều, công việc có sự thay đổi, biến động.')
+        elif an_tinh_in_khac:
+            predict.append('Ấn tinh thấu can lại gặp khắc, công việc dễ gặp trở ngại, khó khăn, thị phi nhiều, mâu thuẫn nhiều, công việc có sự thay đổi, biến động.')
+
     for x in guest_zhi_interactions:
         for col in x['column']:
             if col != guest:
                 chi = bazi[col][1]
-                # print_message(chi)
                 hidden_thap_than = get_hidden_thap_than(chi, day_master)
                 for hg in hidden_thap_than:
                     column_hidden_thap_than.append(hg)
@@ -305,6 +385,10 @@ def career_predict_by_guest(bazi: dict, guest: str):
                             quan_tinh_in_hai = True
                         if x['name'] == 'Tương phá':
                             quan_tinh_in_pha = True
+                        if x['name'] == 'Tương khắc':
+                            quan_tinh_in_khac = True
+                        if x['name'] == 'Tương xung':
+                            quan_tinh_in_xung = True
                     if hg in ('Chính Ấn', 'Thiên Ấn'):
                         if x['name'] == 'Tam hình' or x['name'] == 'Tự hình':
                             an_tinh_in_hinh = True
@@ -318,7 +402,6 @@ def career_predict_by_guest(bazi: dict, guest: str):
                             an_tinh_in_xung = True
 
     column_hidden_thap_than = list(set(column_hidden_thap_than))
-    # print_message(guest_zhi_interactions)
 
     guest_have_tam_hinh = any(item["name"] == "Tam hình" for item in guest_zhi_interactions)
     guest_have_tu_hinh = any(item["name"] == "Tự hình" for item in guest_zhi_interactions)
@@ -361,6 +444,12 @@ def career_predict_by_guest(bazi: dict, guest: str):
 
     predict = [s for s in predict if not any(s in other and s != other for other in predict)]
 
+
+    # Luận thần sát
+    if guest_has_van_xuong:
+        predict.append('Có Văn Xương là cát tinh, công việc có cơ hội thăng tiến, được quý nhân tương trợ, ủng hộ, nên tận dụng cơ hội để phát triển sự nghiệp.')
+
+    # Luận khách can chi trụ tổ hợp
     if len(predict) < 2:
         if 'Chính Ấn' == guest_hidden_thap_than[0]:
             if 'Thương Quan' == guest_thap_than:

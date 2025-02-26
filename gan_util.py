@@ -17,3 +17,7 @@ class GanUtil:
     @staticmethod
     def is_khac(guest_can, host_can):
         return "Tương khắc" == GanUtil.find_interaction(guest_can, host_can)
+
+    @staticmethod
+    def is_xung(guest_can, host_can):
+        return "Tương xung" == GanUtil.find_interaction(guest_can, host_can)

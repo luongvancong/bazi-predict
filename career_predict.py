@@ -117,14 +117,14 @@ print('----- RECORD 25----')
 for month in months:
     bazi = {
         "year": ("Ất", "Hợi"),
-        # "month": ("Bính", "Tuất"),
+        "month": ("Bính", "Tuất"),
         "day": ("Giáp", "Tuất"),
         "hour": ("Nhâm", "Thân"),
         # "thai_nguyen": ("Đinh", "Sửu"),
         # "menh_cung": ("Đinh", "Hợi"),
         # "than_cung": ("Quý", "Mùi"),
-        # "dai_van": ("Quý", "Mùi"),
-        # "luu_nien": ("Ất", "Tị"),
+        "dai_van": ("Quý", "Mùi"),
+        "luu_nien": ("Ất", "Tị"),
         "luu_nguyet": month
     }
     print(f'---------{" ".join(month)}---------')

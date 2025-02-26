@@ -14,10 +14,15 @@ rule_map = {
     frozenset(["Quan tinh thấu can gặp xung khắc", "Quan Ấn tương sinh"]): 'Quan tinh tương sinh là tốt tuy nhiên vẫn tồn tại xung, khắc, công việc có sự thuận lợi nhất định nhưng cũng cần phải cẩn thận với những trở ngại, khó khăn.',
 }
 
-quan_tinh_in_hinh = False
+thap_than_in_can_interactions = {}
+thap_than_in_zhi_interactions = {}
+
+quan_tinh_in_hinh = ({'Chính Quan', 'Thất Sát'} in thap_than_in_zhi_interactions['Tam hình']
+                     or {'Chính Quan', 'Thất Sát'} in thap_than_in_zhi_interactions['Tự hình'])
 quan_tinh_in_hai = False
 quan_tinh_in_pha = False
-quan_tinh_thau_can_gap_xung_khac = True
+quan_tinh_thau_can_gap_xung_khac = ({'Chính Quan', 'Thất Sát'} in thap_than_in_can_interactions['Tương xung']
+                                    or {'Chính Quan', 'Thất Sát'} in thap_than_in_can_interactions['Tương khắc'])
 quan_an_tuong_sinh = True
 co_van_xuong = False
 

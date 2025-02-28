@@ -1,6 +1,7 @@
 # Danh sách các tổ hợp điều kiện và câu luận tương ứng
 import itertools
 
+
 rule_map = {
     frozenset(["Quan tinh gặp hình", "Quan tinh gặp hại", "Quan tinh gặp phá"]): "Quan tinh gặp hình, hại, phá, công việc dễ gặp thị phi, sai sót, mất tập trung, tiểu nhân quấy phá, nên kiểm tra lại công việc trước khi hoàn thành.",
     frozenset(["Quan tinh gặp hình", "Quan tinh gặp hại"]): "Quan tinh gặp hình, hại, công việc dễ gặp thị phi, sai sót, mất tập trung, tiểu nhân quấy phá, cẩn thận giấy tờ, số liệu, nên kiểm tra lại công việc trước khi hoàn thành.",
@@ -14,9 +15,49 @@ rule_map = {
     frozenset(["Quan Ấn tương sinh, có hình, hại, phá"]): "Quan tinh gặp hình, hại, phá nhưng có Quan Ấn tương sinh, công việc tuy có trở ngại nhưng vẫn có quý nhân giúp đỡ, có thể xoay chuyển tình thế.",
     frozenset(["Quan tinh thấu can", "Quan tinh gặp xung khắc"]): 'Quan tinh thấu can lại gặp xung, khắc, công việc dễ gặp trở ngại, khó khăn, thị phi nhiều, mâu thuẫn nhiều, cần phải lưu ý chuyện giấy tờ, các thủ tục pháp lý.',
     frozenset(["Quan tinh thấu can", "Quan tinh gặp xung khắc", "Quan Ấn tương sinh"]): 'Quan ấn tương sinh là tốt tuy nhiên vẫn tồn tại xung, khắc, công việc có sự thuận lợi nhất định nhưng cũng cần phải cẩn thận với những trở ngại, khó khăn.',
-    frozenset(["Ấn tinh nhiều", "khách có Trạch Mã"]): "Ấn tinh nhiều, lại có thêm Trạch Mã công việc có nhiều bận rộn, đi lại công tác nhiều, có thể làm nhiều việc một lúc."
-    # frozenset(["khách có Văn Xương"]): None,
-    # frozenset(['Quan tinh gặp hình', 'khách có Văn Xương', 'Quan Ấn tương sinh']): '123'
+    frozenset(["Ấn tinh nhiều", "khách có Trạch Mã"]): "Ấn tinh nhiều, lại có thêm Trạch Mã công việc có nhiều bận rộn, đi lại công tác nhiều, có thể làm nhiều việc một lúc.",
+    frozenset(["Ấn tinh nhiều"]): "Ấn tinh nhiều, công việc có nhiều bận rộn, có thể làm nhiều việc một lúc.",
+    frozenset(["Quan tinh nhiều"]): "Quan tinh nhiều, công việc dễ gặp áp lực, cần phải lưu ý giữ gìn sức khỏe, tinh thần, biết cân bằng công việc và cuộc sống.",
+    frozenset(["Chính Quan đến hợp nhật chủ", "Khách thể có Văn Xương", "Khách thể có Tướng Tinh"]):
+        "Chính Quan đến hợp với nhật chủ, lại gặp được cát tinh Văn Xương, Tướng Tinh, công việc gặp được thuận lợi, hợp tác vui vẻ, cấp trên quý mến, có cơ hội thăng tiến.",
+    frozenset(["Chính Quan đến hợp nhật chủ"]): "Chính Quan đến hợp với nhật chủ, công việc gặp được thuận lợi, hợp tác vui vẻ, cấp trên quý mến, ủng hộ.",
+    frozenset(["Thất Sát đến tương khắc nhật chủ"]): "Thất Sát đến tương khắc với nhật chủ, công việc dễ gặp xung đột, mâu thuẫn, cần phải lưu ý.",
+    frozenset(["Sát Ấn tương sinh", "Quan tinh gặp hình"]): "Sát Ấn tương sinh, tuy có áp lực nhưng cơ hội phát triển là không tệ. Do có tương hình, vẫn nên cẩn thận với các vấn đề thị phi, xung đột",
+    frozenset(["Sát Ấn tương sinh", "Ấn tinh gặp hình"]): "Sát Ấn tương sinh, tuy có áp lực nhưng cơ hội phát triển là không tệ. Do có tương hình, vẫn nên cẩn thận với các vấn đề thị phi, xung đột",
+    frozenset(["Sát Ấn tương sinh"]): "Sát Ấn tương sinh, tuy có áp lực nhưng cơ hội phát triển là không tệ",
+    frozenset(["Quan Ấn tương sinh", "Quan tinh gặp hình"]): "Quan Ấn tương sinh, dễ đạt được công danh và cơ hội thăng tiến. Do có tương hình, vẫn nên cẩn thận với các vấn đề thị phi, xung đột",
+    frozenset(["Quan Ấn tương sinh", "Quan tinh gặp hình"]): "Quan Ấn tương sinh, dễ đạt được công danh và cơ hội thăng tiến. Do có tương phá, vẫn nên đề phòng tiểu nhân phá hoại",
+    frozenset(["Quan Ấn tương sinh", "Quan tinh gặp hình"]): "Quan Ấn tương sinh, dễ đạt được công danh và cơ hội thăng tiến. Do có tương hại, vẫn nên đề phòng lòng dạ tiểu nhân có ý đồ xấu.",
+    frozenset(["Quan Ấn tương sinh", "Khách thể có Văn Xương"]): "Quan Ấn tương sinh, Lại có thêm cát tinh Tướng Tinh tương trợ, cơ hội thăng tiến sẽ tốt hơn",
+    frozenset(["Quan Sát hỗn tạp", "Khách thể Thương Quan khắc Quan"]): "Quan Sát thấu can lại tạp loạn, gặp cách cục Thương Quan khắc Quan lưu ý chuyện thị phi, tranh đấu tại công sở.",
+    frozenset(["Quan Sát hỗn tạp"]): "Quan Sát thấu can lại tạp loạn, công việc dễ gặp xung đột, mâu thuẫn, cần phải lưu ý.",
+    frozenset(["Tài tinh ám hợp Ấn tinh"]): "Tài tinh Ám hợp Ấn tinh, công việc dễ gặp sai sót, nhầm lẫn với số liệu, con số, hoặc tài chính, cũng rất dễ mất tập trung.",
+    frozenset(["Ấn tinh gặp khắc"]): "Ấn tinh gặp khắc, công việc dễ gặp trở ngại, xung đột, sai sót, mất tập trung, nên kiểm tra lại công việc trước khi hoàn thành.",
+    frozenset(["Ấn tinh gặp hình"]): "Ấn tinh gặp hình, công việc dễ gặp thị phi, sai sót, mất tập trung, nên kiểm tra lại công việc trước khi hoàn thành.",
+    frozenset(["Ấn tinh gặp hại"]): "Ấn tinh gặp hại, công việc dễ gặp tiểu nhân quấy phá, nên chú ý hành động, lời nói giữ gìn hòa khí.",
+    frozenset(["Ấn tinh gặp phá"]): "Ấn tinh gặp phá, công việc dễ gặp thị phi, xung đột, đổ vỡ, nên kiểm tra lại công việc trước khi hoàn thành.",
+    frozenset(["Tam hội Ấn vượng", "Khách thể có Trạch Mã"]): "Tam hội làm Ấn vượng, lại gặp thêm Trạch Mã, nên công việc nhiều, bận rộn, có thể sẽ phải đi lại công tác nhiều.",
+    frozenset(["Tam hội Quan Sát vượng"]): "Tam hội làm Quan Sát vượng nên công việc gặp nhiều áp lực, bận rộn.",
+    frozenset(["Khách thể có Thất Sát tương khắc nhật chủ"]): "Thất Sát đến tương khắc với nhật chủ, công việc dễ gặp xung đột, mâu thuẫn, cần phải lưu ý.",
+}
+
+rule_map_by_base_column = {
+    frozenset(): "Trụ tháng có Ấn tinh gặp khắc, công việc dễ gặp xung đột, mâu thuẫn.",
+    frozenset(): "Trụ tháng có Ấn tinh gặp Tài khắc, công việc dễ gặp xung đột, mâu thuẫn, dễ gặp sai sót liên quan đến số liệu, giấy tờ",
+    frozenset(): "Trụ tháng có Quan tinh gặp khắc, dễ mất lòng cấp trên hoặc quản lý trực tiếp, công việc dễ gặp xung đột, mâu thuẫn.",
+}
+
+rule_map_by_guest_column = {
+    frozenset(): "Trụ khách thể là Ấn tinh, công việc tương đối nhiều và bận rộn, Thương Quan thấu can có nhiều ý tưởng, đầu óc nhạy bén nhưng cũng hay bay bổng.",
+    frozenset(): "Trụ khách thể là Quan Ấn tương sinh, công việc tương đối nhiều và bận rộn, Chính Quan thấu can dễ được quý nhân tương trợ, ủng hộ.",
+    frozenset(): "Trụ khách thể là Sát Ấn tương sinh, chăm chỉ làm việc sẽ đạt được thành công, công việc tương đối nhiều và bận rộn.",
+    frozenset(): "Trụ khách thể là Tài khắc Ấn, công việc dễ gặp sai sót, mất tập trung, dễ vì lợi ích cá nhân mà mất đi cơ hội.",
+    frozenset(): "Trụ khách thể là Kiếp Tài thấu can, lại được Ấn vượng, công việc có sự mở rộng quan hệ, nhưng cũng dễ hao tài.",
+    frozenset(): "Trụ khách thể là Thực Thần thấu can dễ được người khác quý mến.",
+    frozenset(): "Trụ khách thể là Tỷ Kiên thấu can, toạ Sát, công việc có sự mở rộng quan hệ, nhưng cũng dễ hao tài.",
+    frozenset(): "Trụ khách thể là Tỷ Kiên thấu can, toạ Sát, công việc có sự mở rộng quan hệ, nhưng cũng dễ hao tài.",
+    frozenset(): "Quan tinh song thể lực lượng vượng tướng, công việc tương đối nhiều và bận rộn, cần phải lưu ý giữ gìn sức khỏe, tinh thần, biết cân bằng công việc và cuộc sống.",
+    frozenset(): "Tài sinh Quan, công việc và tài lộc cùng song hành mang lại nhiều cơ hội thăng tiến, phát triển."
 }
 
 thap_than_in_can_interactions = {
@@ -62,12 +103,15 @@ conditions = [
     (quan_an_tuong_sinh_gap_hinh_hai_pha, "Quan Ấn tương sinh, có hình, hại, phá"),
     (quan_an_tuong_sinh, "Quan Ấn tương sinh"),
     (quan_tinh_thau_can_gap_xung_khac, "Quan tinh thấu can gặp xung khắc"),
-    (an_tinh_nhieu, "Ấn tinh nhiều"),
-    (guest_have_trach_ma, "khách có Trạch Mã"),
+    (True, "Ấn tinh nhiều"),
+    (False, "khách có Trạch Mã"),
     (True, "Quan tinh thấu can"),
     # (True, "Quan tinh gặp xung khắc")
 ]
 
+for bol, name in conditions:
+    if name == 'khách có Văn Xương':
+        conditions[conditions.index((bol, name))] = (False, name)
 
 def find_best_match(active_conditions, rule_map):
     """Tìm câu luận gần nhất nếu không có kết quả chính xác"""

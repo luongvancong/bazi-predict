@@ -42,22 +42,22 @@ rule_map = {
 }
 
 rule_map_by_base_column = {
-    frozenset(): "Trụ tháng có Ấn tinh gặp khắc, công việc dễ gặp xung đột, mâu thuẫn.",
-    frozenset(): "Trụ tháng có Ấn tinh gặp Tài khắc, công việc dễ gặp xung đột, mâu thuẫn, dễ gặp sai sót liên quan đến số liệu, giấy tờ",
-    frozenset(): "Trụ tháng có Quan tinh gặp khắc, dễ mất lòng cấp trên hoặc quản lý trực tiếp, công việc dễ gặp xung đột, mâu thuẫn.",
+    frozenset(["Trụ tháng có Ấn tinh gặp khắc"]): "Trụ tháng có Ấn tinh gặp khắc, công việc dễ gặp xung đột, mâu thuẫn.",
+    frozenset(["Trụ tháng có Ấn tinh gặp khắc", "Khách thể là Tài tinh"]): "Trụ tháng có Ấn tinh gặp Tài khắc, công việc dễ gặp xung đột, mâu thuẫn, dễ gặp sai sót liên quan đến số liệu, giấy tờ",
+    frozenset(["Trụ tháng có Quan tinh gặp khắc"]): "Trụ tháng có Quan tinh gặp khắc, dễ mất lòng cấp trên hoặc quản lý trực tiếp, công việc dễ gặp xung đột, mâu thuẫn.",
+    frozenset(["Trụ tháng có Ấn tinh gặp khắc", "Trụ tháng có Trạch Mã"]): "Trụ tháng có Ấn tinh gặp khắc, lại mang Trạch Mã, công việc dễ có biến động, đi lại công tác nhiều, hoặc điều chuyển công tác",
 }
 
 rule_map_by_guest_column = {
-    frozenset(): "Trụ khách thể là Ấn tinh, công việc tương đối nhiều và bận rộn, Thương Quan thấu can có nhiều ý tưởng, đầu óc nhạy bén nhưng cũng hay bay bổng.",
-    frozenset(): "Trụ khách thể là Quan Ấn tương sinh, công việc tương đối nhiều và bận rộn, Chính Quan thấu can dễ được quý nhân tương trợ, ủng hộ.",
-    frozenset(): "Trụ khách thể là Sát Ấn tương sinh, chăm chỉ làm việc sẽ đạt được thành công, công việc tương đối nhiều và bận rộn.",
-    frozenset(): "Trụ khách thể là Tài khắc Ấn, công việc dễ gặp sai sót, mất tập trung, dễ vì lợi ích cá nhân mà mất đi cơ hội.",
-    frozenset(): "Trụ khách thể là Kiếp Tài thấu can, lại được Ấn vượng, công việc có sự mở rộng quan hệ, nhưng cũng dễ hao tài.",
-    frozenset(): "Trụ khách thể là Thực Thần thấu can dễ được người khác quý mến.",
-    frozenset(): "Trụ khách thể là Tỷ Kiên thấu can, toạ Sát, công việc có sự mở rộng quan hệ, nhưng cũng dễ hao tài.",
-    frozenset(): "Trụ khách thể là Tỷ Kiên thấu can, toạ Sát, công việc có sự mở rộng quan hệ, nhưng cũng dễ hao tài.",
-    frozenset(): "Quan tinh song thể lực lượng vượng tướng, công việc tương đối nhiều và bận rộn, cần phải lưu ý giữ gìn sức khỏe, tinh thần, biết cân bằng công việc và cuộc sống.",
-    frozenset(): "Tài sinh Quan, công việc và tài lộc cùng song hành mang lại nhiều cơ hội thăng tiến, phát triển."
+    frozenset(["Khách thể là Thương Quan - Ấn"]): "Trụ khách thể là Ấn tinh, công việc tương đối nhiều và bận rộn, Thương Quan thấu can có nhiều ý tưởng, đầu óc nhạy bén nhưng cũng hay bay bổng.",
+    frozenset(["Khách thể là Quan Ấn tương sinh"]): "Trụ khách thể là Quan Ấn tương sinh, công việc tương đối nhiều và bận rộn, Chính Quan thấu can dễ được quý nhân tương trợ, ủng hộ.",
+    frozenset(["Khách thể là Sát Ấn tương sinh"]): "Trụ khách thể là Sát Ấn tương sinh, chăm chỉ làm việc sẽ đạt được thành công, công việc tương đối nhiều và bận rộn.",
+    frozenset(["Khách thể là Tài khắc Ấn"]): "Trụ khách thể là Tài khắc Ấn, công việc dễ gặp sai sót, mất tập trung, dễ vì lợi ích cá nhân mà mất đi cơ hội.",
+    frozenset(["Khách thể là Kiếp Tài - Ấn"]): "Trụ khách thể là Kiếp Tài thấu can, lại được Ấn vượng, công việc có sự mở rộng quan hệ, nhưng cũng dễ hao tài.",
+    frozenset(["Can khách thể là Thực Thần"]): "Trụ khách thể là Thực Thần thấu can dễ được người khác quý mến.",
+    frozenset(["Khách thể là Tỷ Kiên - Thất Sát"]): "Trụ khách thể là Tỷ Kiên thấu can, toạ Sát, công việc có sự mở rộng quan hệ, nhưng cũng dễ hao tài.",
+    frozenset(["Khách thể là Quan tinh song thể"]): "Quan tinh song thể lực lượng vượng tướng, công việc tương đối nhiều và bận rộn, cần phải lưu ý giữ gìn sức khỏe, tinh thần, biết cân bằng công việc và cuộc sống.",
+    frozenset(["Khách thể là Tài sinh Quan"]): "Tài sinh Quan, công việc và tài lộc cùng song hành mang lại nhiều cơ hội thăng tiến, phát triển."
 }
 
 thap_than_in_can_interactions = {
@@ -109,35 +109,43 @@ conditions = [
     # (True, "Quan tinh gặp xung khắc")
 ]
 
-for bol, name in conditions:
-    if name == 'khách có Văn Xương':
-        conditions[conditions.index((bol, name))] = (False, name)
+conditions = [
+    (False, "Khách thể là Tài tinh"),
+    (True, "Trụ tháng có Ấn tinh gặp khắc"),
+]
 
-def find_best_match(active_conditions, rule_map):
-    """Tìm câu luận gần nhất nếu không có kết quả chính xác"""
-    if active_conditions in rule_map:
-        return rule_map[active_conditions]
+# for bol, name in conditions:
+#     if name == 'khách có Văn Xương':
+#         conditions[conditions.index((bol, name))] = (False, name)
 
-    # Thử loại bỏ dần từng điều kiện để tìm tổ hợp gần nhất
-    for i in range(len(active_conditions), 0, -1):
-        for subset in itertools.combinations(active_conditions, i):
-            subset_frozen = frozenset(subset)
-            if subset_frozen in rule_map:
-                return rule_map[subset_frozen]
-
-    return 'Không có dự đoán cho trường hợp này'
+# def find_best_match(active_conditions, rule_map):
+#     """Tìm câu luận gần nhất nếu không có kết quả chính xác"""
+#     if active_conditions in rule_map:
+#         return rule_map[active_conditions]
+#
+#     # Thử loại bỏ dần từng điều kiện để tìm tổ hợp gần nhất
+#     for i in range(len(active_conditions), 0, -1):
+#         for subset in itertools.combinations(active_conditions, i):
+#             subset_frozen = frozenset(subset)
+#             if subset_frozen in rule_map:
+#                 return rule_map[subset_frozen]
+#
+#     return 'Không có dự đoán cho trường hợp này'
 
 
 def find_best_match_multi(active_conditions, rule_map):
     """Chỉ lấy các tổ hợp điều kiện lớn nhất, loại bỏ các tổ hợp nhỏ nằm trong tổ hợp lớn."""
     matched_predictions = {}
 
+    # Chuẩn hóa rule_map để loại bỏ ảnh hưởng của thứ tự
+    normalized_rule_map = {frozenset(k): v for k, v in rule_map.items()}
+
     # Tìm tất cả các tổ hợp con hợp lệ trong rule_map
     for i in range(len(active_conditions), 0, -1):
         for subset in itertools.combinations(active_conditions, i):
             subset_frozen = frozenset(subset)
-            if subset_frozen in rule_map:
-                matched_predictions[subset_frozen] = rule_map[subset_frozen]
+            if subset_frozen in normalized_rule_map:
+                matched_predictions[subset_frozen] = normalized_rule_map[subset_frozen]
 
     # Loại bỏ các tổ hợp nhỏ nếu chúng nằm trong tổ hợp lớn hơn
     filtered_predictions = []
@@ -162,7 +170,7 @@ predict = []
 if active_conditions:
     # Lấy câu luận tương ứng từ rule_map
     # prediction = rule_map.get(active_conditions) or "Không có dự đoán cho trường hợp này"
-    prediction = find_best_match_multi(active_conditions, rule_map)
+    prediction = find_best_match_multi(active_conditions, rule_map_by_base_column)
     predict.extend(prediction)
 
 print(predict)

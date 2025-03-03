@@ -1,7 +1,9 @@
 # -*- encoding: utf-8 -*-
 from config.gan import GAN
+from core.gan_util import GanUtil
 from core.than_sat import ThanSat
 from core.util import Util
+from core.zhi_util import ZhiUtil
 from util import find_thap_than, get_hidden_thap_than, find_gan_interaction
 from zhi_util import get_hidden_gans, check_zhi_interaction_priority, is_tuong_xung, is_tuong_khac
 
@@ -78,9 +80,9 @@ class CareerConditionCollector:
         self.guest_data['have_than_sat']['Văn Xương'] = any(item["column"] == guest for item in van_xuong_items)
         self.guest_data['have_than_sat']['Tướng Tinh'] = any(item["column"] == guest for item in tuong_tinh_items)
         self.guest_data['have_than_sat']['Trạch Mã'] = any(item["column"] == guest for item in trach_ma_items)
+        self.guest_data['than_sat'] = [item["name"] for item in all_than_sat if item["column"] == guest]
         self.guest_data['gan_interactions'] = find_gan_interaction(guest_can, day_master)
         self.guest_data['zhi_interactions'] = util.find_guest_zhi_interactions()
-
 
     def collect_conditions(self):
         # B1. Luận tương tác thiên can, thập thần, có phối trụ, thần sát
@@ -147,21 +149,44 @@ class CareerConditionCollector:
         month_data = self.month_data
         guest_data = self.guest_data
 
+        month_can = self.month_data['gan']
+        month_chi = self.month_data['zhi']
+
+        guest_can = self.guest_data['gan']
+        guest_chi = self.guest_data['zhi']
+
         conditions = []
 
-        if month_data['gan_thap_than'] in self.an_tinh_set or set(month_data['zhi_thap_than']) & self.an_tinh_set:
-            if month_data['gan_interactions'] == 'Tương khắc' or 'Tương khắc' in month_data['zhi_interactions']:
-                conditions.append((True, 'Trụ tháng có Ấn tinh gặp khắc'))
+        if month_data['gan_thap_than'] in self.an_tinh_set and guest_data['gan_thap_than'] in self.tai_tinh_set:
+            conditions.append((True, 'Trụ tháng có Ấn tinh gặp khắc'))
+            conditions.append((True, 'Khách thể là Tài tinh'))
 
-        if month_data['gan_thap_than'] in self.an_tinh_set or set(month_data['zhi_thap_than']) & self.an_tinh_set:
-            if month_data['gan_interactions'] == 'Tương khắc' or 'Tương khắc' in month_data['zhi_interactions']:
-                if guest_data['gan_thap_than'] in self.tai_tinh_set or guest_data['zhi_thap_than'][0] in self.tai_tinh_set:
-                    conditions.append((True, 'Trụ tháng có Ấn tinh gặp khắc'))
-                    conditions.append((True, 'Khách thể là Tài tinh'))
+        if set(month_data['zhi_thap_than']) & self.an_tinh_set and guest_data['zhi_thap_than'][0] in self.tai_tinh_set and ZhiUtil.is_khac(guest_chi, month_chi):
+            conditions.append((True, 'Trụ tháng có Ấn tinh gặp khắc'))
+            if guest_data['zhi_thap_than'][0] in self.tai_tinh_set:
+                conditions.append((True, 'Khách thể là Tài tinh'))
 
-        if month_data['gan_thap_than'] in self.quan_tinh_set or set(month_data['zhi_thap_than']) & self.quan_tinh_set:
-            if month_data['gan_interactions'] == 'Tương khắc' or 'Tương khắc' in month_data['zhi_interactions']:
-                conditions.append((True, 'Trụ tháng có Quan tinh gặp khắc'))
+        if month_data['gan_thap_than'] in self.quan_tinh_set and guest_data['gan_thap_than'] in self.thuc_thuong_set:
+            conditions.append((True, 'Trụ tháng có Quan tinh gặp khắc'))
+
+        if (set(month_data['zhi_thap_than']) & self.quan_tinh_set and guest_data['zhi_thap_than'][0] in self.thuc_thuong_set
+                and ZhiUtil.is_khac(guest_chi, month_chi)):
+            conditions.append((True, 'Trụ tháng có Quan tinh gặp khắc'))
+            if guest_data['zhi_thap_than'][0] in self.thuc_thuong_set:
+                conditions.append((True, 'Khách thể là Thực Thương'))
+
+        if (set(month_data['zhi_thap_than']) & self.quan_tinh_set and guest_data['zhi_thap_than'][0] in self.thuc_thuong_set
+                and ZhiUtil.is_xung(guest_chi, month_chi)):
+            conditions.append((True, 'Trụ tháng có Quan tinh gặp xung'))
+            if guest_data['zhi_thap_than'][0] in self.thuc_thuong_set:
+                conditions.append((True, 'Khách thể là Thực Thương'))
+
+        for interaction in self.guest_data['zhi_interactions']:
+            if 'month' in interaction['column'] and self.guest in interaction['column'] and set(self.month_data['zhi_thap_than']) & self.quan_tinh_set:
+                conditions.append((True, f"Trụ tháng có Quan tinh gặp {interaction['name']}"))
+
+            if 'month' in interaction['column'] and self.guest in interaction['column'] and set(self.month_data['zhi_thap_than']) & self.an_tinh_set:
+                conditions.append((True, f"Trụ tháng có Ấn tinh gặp {interaction['name']}"))
 
         # remove duplicate conditions
         conditions = list(set(conditions))
@@ -170,9 +195,13 @@ class CareerConditionCollector:
 
     def find_than_sat_conditions(self):
         month_data = self.month_data
+        guest_data = self.guest_data
         conditions = []
         if 'Trạch Mã' in month_data['than_sat']:
             conditions.append((True, 'Trụ tháng có Trạch Mã'))
+
+        for ts in guest_data['than_sat']:
+            conditions.append((True, f"Khách thể có {ts}"))
 
         # remove duplicate conditions
         conditions = list(set(conditions))
@@ -239,7 +268,6 @@ class CareerConditionCollector:
                     conditions.append((True, 'Ấn tinh gặp hại'))
 
             if x['name'] == 'Tương phá':
-                print(x['thap_than'], x['column'], x['zhi'])
                 if self.an_tinh_set & set(x['thap_than']):
                     conditions.append((True, 'Ấn tinh gặp phá'))
 
@@ -247,3 +275,35 @@ class CareerConditionCollector:
         conditions = list(set(conditions))
 
         return conditions
+
+    def debug(self):
+        bazi = self.bazi
+
+        str_columns = []
+        str_can = []
+        str_chi = []
+        for (column, (can, chi)) in bazi.items():
+            str_columns.append(f"{column.ljust(10)}")
+            str_can.append(f"{can.ljust(10)}")
+            str_chi.append(f"{chi.ljust(10)}")
+
+        print(f"{''.join(str_columns)}")
+        print(f"{''.join(str_can)}")
+        print(f"{''.join(str_chi)}")
+        print("\n")
+
+        print('--------- Tương tác với trụ tháng -----------')
+        print(*self.find_month_column_conditions(), sep="\n")
+        print("\n")
+
+        print('--------- Thập thần tổ hợp -------------------------')
+        print(*self.find_thap_than_conditions(), sep="\n")
+        print("\n")
+
+        print('--------- Tổ hợp trụ khách -----------------')
+        print(*self.find_guest_column_conditions(), sep="\n")
+        print("\n")
+
+        print('--------- Thần sát ------------')
+        print(*self.find_than_sat_conditions(), sep="\n")
+        print("\n")

@@ -15,8 +15,8 @@ bazi = {
 
 collector = CareerConditionCollector(bazi, guest='luu_nguyet')
 # print(bazi['year'][0])
-print(f"{bazi['year'][0].ljust(8)}    {bazi['month'][0].ljust(8)}   {bazi['day'][0].ljust(8)}    {bazi['hour'][0].ljust(8)}  {bazi['luu_nguyet'][0].ljust(8)}")
-print(f"{bazi['year'][1].ljust(8)}    {bazi['month'][1].ljust(8)}   {bazi['day'][1].ljust(8)}    {bazi['hour'][1].ljust(8)}  {bazi['luu_nguyet'][1].ljust(8)}")
+# print(f"{bazi['year'][0].ljust(8)}    {bazi['month'][0].ljust(8)}   {bazi['day'][0].ljust(8)}    {bazi['hour'][0].ljust(8)}  {bazi['luu_nguyet'][0].ljust(8)}")
+# print(f"{bazi['year'][1].ljust(8)}    {bazi['month'][1].ljust(8)}   {bazi['day'][1].ljust(8)}    {bazi['hour'][1].ljust(8)}  {bazi['luu_nguyet'][1].ljust(8)}")
 
-print('----------------conditions----------------------')
-print(collector.collect_conditions())
+print('----------------DEBUG----------------------')
+collector.debug()

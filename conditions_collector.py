@@ -1,6 +1,9 @@
 # -*- encoding: utf-8 -*-
+from collections import defaultdict
+
 from config.gan import GAN
 from core.gan_util import GanUtil
+from core.ten_god_util import TenGodUtil
 from core.than_sat import ThanSat
 from core.util import Util
 from core.zhi_util import ZhiUtil
@@ -11,7 +14,9 @@ from zhi_util import get_hidden_gans, check_zhi_interaction_priority, is_tuong_x
 class ConditionCollector:
 
     day_master_data = {}
-    month_data = {}
+    month_data = {
+        'zhi_thap_than': []
+    }
     guest_data = {
         'have_than_sat': {}
     }
@@ -121,9 +126,6 @@ class ConditionCollector:
         day_master_data = self.day_master_data
         guest_data = self.guest_data
 
-        day_master = day_master_data['gan']
-        day_master_elemental = day_master_data['elemental']
-
         guest_thap_than = guest_data['gan_thap_than']
         guest_hidden_thap_than = guest_data['zhi_thap_than']
 
@@ -154,17 +156,10 @@ class ConditionCollector:
             or guest_hidden_thap_than[0] == 'Thương Quan' and guest_thap_than == 'Chính Quan':
                 conditions.append((True, 'Khách thể là Thương Quan khắc Quan'))
 
-        if guest_thap_than in self.quan_tinh_set and guest_hidden_thap_than[0] in self.quan_tinh_set:
-            conditions.append((True, 'Khách thể là Quan tinh song thể'))
+        conditions.append((True, f"Tổ hợp khách thể là {guest_thap_than} {guest_hidden_thap_than[0]}"))
 
-        if guest_hidden_thap_than[0] in self.an_tinh_set:
-            conditions.append((True, f'Khách thể là {guest_thap_than} - Ấn'))
-
-        if guest_thap_than == 'Thực Thần':
-            conditions.append((True, 'Can khách thể là Thực Thần'))
-
-        if guest_data['gan_thap_than'] in self.tai_tinh_set or guest_data['zhi_thap_than'][0] in self.tai_tinh_set:
-            conditions.append((True, 'Khách thể là Tài tinh'))
+        if guest_data['gan_thap_than'] == guest_data['zhi_thap_than'][0]:
+            conditions.append((True, f"Khách thể là {guest_thap_than} song thể lực vượng"))
 
         # remove duplicate conditions
         conditions = list(set(conditions))
@@ -172,19 +167,25 @@ class ConditionCollector:
         return conditions
 
     def find_month_column_conditions(self):
+        return self.find_column_conditions('month')
+
+    def find_column_conditions(self, column: str):
         conditions = []
-        column_conditions = self.find_column_conditions()
+        column_conditions = self.find_all_column_conditions()
 
         for cond in column_conditions:
-            if cond['column'] == 'month':
-                conditions.append(cond['condition'])
+            if cond['column'] == column:
+                conditions.append(cond)
 
         return conditions
 
-    def find_column_conditions(self):
+    def find_all_column_conditions(self):
         guest = self.guest
         guest_data = self.guest_data
         guest_chi = self.guest_data['zhi']
+
+        guest_can_thap_than =  guest_data['gan_thap_than']
+        guest_chi_thap_than = guest_data['zhi_thap_than']
 
         conditions = []
 
@@ -193,86 +194,91 @@ class ConditionCollector:
             can = self.bazi[column][0]
             chi = self.bazi[column][1]
             column_label = self.column_labels[column]
-            gan_thap_than = self.data[column]['gan_thap_than']
+            gan_thap_than = column != 'day' and self.data[column]['gan_thap_than'] or 'Nhật chủ'
             zhi_thap_than = self.data[column]['zhi_thap_than']
             than_sat_list = self.data[column]['than_sat']
             gan_interaction = self.data[column]['gan_interactions']
-            if gan_thap_than in self.an_tinh_set and guest_data['gan_thap_than'] in self.tai_tinh_set:
-                conditions.append({
-                    "column": column,
-                    "group": "thap_than",
-                    "condition": f"Trụ {self.column_labels[column]} có Ấn tinh gặp Tương khắc"
-                })
 
-            if set(zhi_thap_than) & self.an_tinh_set and guest_data['zhi_thap_than'][0] in self.tai_tinh_set and ZhiUtil.is_khac(guest_chi, chi):
-                conditions.append({
-                    "column": column,
-                    "group": "thap_than",
-                    "condition": f"Trụ {self.column_labels[column]} có Ấn tinh gặp Tương khắc"
-                })
+            condition_item = {
+                "group": [],
+                "column": column,
+                "thap_than": [gan_thap_than],
+                "than_sat": [],
+                'thap_than_interactor': [],
+                "interactions": [],
+                "condition": ""
+            }
 
-            if gan_thap_than in self.quan_tinh_set and guest_data['gan_thap_than'] in self.thuc_thuong_set:
-                conditions.append({
-                    "column": column,
-                    "group": "thap_than",
-                    "condition": f"Trụ {self.column_labels[column]} có Quan tinh gặp Tương khắc"
-                })
+            if TenGodUtil.is_khac(guest_can_thap_than, gan_thap_than):
+                new_condition_item = condition_item.copy()
+                new_condition_item['group'] = ['thap_than']
+                new_condition_item['interactions'] = ['Tương khắc']
+                new_condition_item['thap_than_interactor'] = [guest_can_thap_than]
+                new_condition_item['condition'] = f"Thiên can trụ {self.column_labels[column]} có {gan_thap_than} gặp khắc"
+                conditions.append(new_condition_item)
 
-            if (set(zhi_thap_than) & self.quan_tinh_set and guest_data['zhi_thap_than'][0] in self.thuc_thuong_set
-                    and ZhiUtil.is_khac(guest_chi, chi)):
-                conditions.append({
-                    "column": column,
-                    "group": "thap_than",
-                    "condition": f"Trụ {column_label} có Quan tinh gặp Tương khắc"
-                })
+            if TenGodUtil.is_sinh(guest_can_thap_than, gan_thap_than):
+                new_condition_item = condition_item.copy()
+                new_condition_item['group'] = ['thap_than']
+                new_condition_item['interactions'] = ['Tương sinh']
+                new_condition_item['thap_than_interactor'] = [guest_can_thap_than]
+                new_condition_item['condition'] = f"Thiên can trụ {self.column_labels[column]} có {gan_thap_than} gặp sinh"
+                conditions.append(new_condition_item)
 
-            if (set(zhi_thap_than) & self.quan_tinh_set and guest_data['zhi_thap_than'][0] in self.thuc_thuong_set
-                    and ZhiUtil.is_xung(guest_chi, chi)):
-                conditions.append({
-                    "column": column,
-                    "group": "thap_than",
-                    "condition": f"Trụ {column_label} có Quan tinh gặp Tương xung"
-                })
-
-            if gan_interaction:
-                conditions.append({
-                    "column": column,
-                    "group": "thien_can",
-                    "condition": f"Trụ {column_label} {can} {GanUtil.get_elemental(can)} gặp {gan_interaction}"
-                })
+            additions = set([])
+            for interaction in self.guest_data['zhi_interactions']:
+                if column in interaction['column'] and self.guest in interaction['column']:
+                    additions.add(interaction['name'])
 
             for interaction in self.guest_data['zhi_interactions']:
-                if column in interaction['column'] and self.guest in interaction['column'] and set(self.month_data['zhi_thap_than']) & self.quan_tinh_set:
-                    conditions.append({
-                        "column": column,
-                        "group": "thap_than",
-                        "condition": f"Trụ {column_label} có Quan tinh gặp {interaction['name']}"
-                    })
+                if column in interaction['column'] and self.guest in interaction['column']:
+                    for z_thap_than in zhi_thap_than:
+                        new_condition_item = condition_item.copy()
+                        new_condition_item['thap_than'] = [z_thap_than]
+                        new_condition_item['group'] = ['zhi_thap_than']
+                        new_condition_item['interactions'] = list(additions)
+                        new_condition_item['thap_than_interactor'] = self.guest_data['zhi_thap_than']
+                        new_condition_item['condition'] = f"Địa chi trụ {column_label} có {z_thap_than} gặp {interaction['name']}"
+                        conditions.append(new_condition_item)
 
-                if column in interaction['column'] and self.guest in interaction['column'] and set(self.month_data['zhi_thap_than']) & self.an_tinh_set:
-                    conditions.append({
-                        "column": column,
-                        "group": "thap_than",
-                        "condition": f"Trụ {column_label} có Ấn tinh gặp {interaction['name']}"
-                    })
-
-                if column in interaction['column']:
-                    conditions.append({
-                        "column": column,
-                        "group": "dia_chi",
-                        "condition": f"Trụ {column_label} {chi} {ZhiUtil.get_elemental(chi)} gặp {interaction['name']}"
-                    })
-                    conditions.append({
-                        "column": column,
-                        "group": "than_sat",
-                        "condition": f"Trụ {column_label} có {', '.join(than_sat_list)} gặp {interaction['name']}"
-                    })
+            for ts in self.data[column]['than_sat']:
+                new_condition_item = condition_item.copy()
+                new_condition_item['group'] = ['than_sat']
+                new_condition_item['than_sat'] = [ts]
+                new_condition_item['interactions'] = list(additions)
+                new_condition_item['condition'] = f"Trụ {column_label} có {ts}"
+                conditions.append(new_condition_item)
 
         # remove duplicate conditions
+        conditions = self.remove_duplicates(conditions)
+        conditions = self.merge_conditions(conditions)
 
-        conditions.sort(key=lambda x: (x['group'] != 'thap_than', x['group']))
+        return conditions
 
-        return self.remove_duplicates(conditions)
+    def merge_conditions(self, items):
+        merged_dict = defaultdict(lambda: defaultdict(list))
+
+        for item in items:
+            key = (tuple(item['group']), item['column'], tuple(item['thap_than']), tuple(item['than_sat']))
+            merged_dict[key]['interactions'].extend(item['interactions'])
+            merged_dict[key]['thap_than_interactor'].extend(item['thap_than_interactor'])
+            merged_dict[key]['condition'].append(item['condition'])
+            # merged_dict[key]['group'].extend(item['group'])
+
+        # Chuyển kết quả về danh sách
+        merged_list = []
+        for (group, column, thap_than, than_sat), values in merged_dict.items():
+            merged_list.append({
+                'group': list(group),
+                'column': column,
+                'thap_than': list(thap_than),
+                'than_sat': list(than_sat),
+                'thap_than_interactor': values['thap_than_interactor'],
+                'interactions': list(set(values['interactions'])),  # Loại bỏ trùng lặp
+                'condition': ' và '.join(values['condition']),
+            })
+
+        return merged_list
 
     def find_than_sat_conditions(self):
         guest_data = self.guest_data
@@ -396,7 +402,23 @@ class ConditionCollector:
         print("\n")
 
         print('--------- Tương tác với các loại trụ -----------')
-        print(*self.find_column_conditions(), sep="\n")
+        print(*self.find_all_column_conditions(), sep="\n")
+        print("\n")
+
+        print('-------- Tổng hợp theo trụ năm ------------')
+        print(*self.find_column_conditions('year'), sep="\n")
+        print("\n")
+
+        print('-------- Tổng hợp theo trụ tháng ------------')
+        print(*self.find_column_conditions('month'), sep="\n")
+        print("\n")
+
+        print('-------- Tổng hợp theo trụ ngày ------------')
+        print(*self.find_column_conditions('day'), sep="\n")
+        print("\n")
+
+        print('-------- Tổng hợp theo trụ giờ ------------')
+        print(*self.find_column_conditions('hour'), sep="\n")
         print("\n")
 
         print('--------- Thập thần tổ hợp -------------------------')
@@ -410,12 +432,3 @@ class ConditionCollector:
         print('--------- Thần sát ------------')
         print(*self.find_than_sat_conditions(), sep="\n")
         print("\n")
-
-
-        print('-------- Tổng hợp theo trụ tháng ------------')
-        for cond in self.find_column_conditions():
-            if cond['column'] == 'month':
-                print(cond['condition'])
-        for cond in self.find_than_sat_conditions():
-            if cond['column'] == 'month':
-                print(cond['condition'])
